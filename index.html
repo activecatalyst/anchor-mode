@@ -3,605 +3,645 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=1366, initial-scale=1.0">
-<title>Daily Job Search System — Anchor Mode</title>
+<title>Anchor Mode — Daily Job Search System</title>
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230D0F0E'/%3E%3Ctext x='16' y='22' font-family='Georgia,serif' font-size='14' font-weight='700' fill='%23C8F56A' text-anchor='middle' letter-spacing='-0.5'%3EAM%3C/text%3E%3C/svg%3E">
 <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'%3E%3Crect width='180' height='180' rx='40' fill='%230D0F0E'/%3E%3Ctext x='90' y='122' font-family='Georgia,serif' font-size='80' font-weight='700' fill='%23C8F56A' text-anchor='middle' letter-spacing='-2'%3EAM%3C/text%3E%3C/svg%3E">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Anchor Mode">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0D0F0E;--surf:#141614;--surf2:#1C1F1C;--surf3:#222622;
+  --border:rgba(255,255,255,0.07);--border-hi:rgba(255,255,255,0.14);
+  --accent:#C8F56A;--accent-d:rgba(200,245,106,0.12);--accent-b:rgba(200,245,106,0.28);
+  --t1:#F2F2ED;--t2:#8A8F84;--t3:#4A4F45;
+  --c-anchor:#F5C842;--c-primary:#6AB8F5;--c-reset:#F5856A;--c-opt:#B06AF5;--c-build:#A78BFA;
+  --bg-anchor:rgba(245,200,66,0.11);--bg-primary:rgba(106,184,245,0.11);
+  --bg-reset:rgba(245,133,106,0.11);--bg-opt:rgba(176,106,245,0.11);--bg-build:rgba(167,139,250,0.11);
+}
+html,body{width:1366px;min-height:1024px;background:var(--bg);font-family:'DM Sans',sans-serif;color:var(--t1);-webkit-font-smoothing:antialiased}
 
-  :root {
-    --bg: #0D0F0E;
-    --surface: #141614;
-    --surface2: #1C1F1C;
-    --surface3: #222622;
-    --border: rgba(255,255,255,0.07);
-    --border-hover: rgba(255,255,255,0.13);
-    --accent: #C8F56A;
-    --accent-dim: rgba(200,245,106,0.12);
-    --text-primary: #F2F2ED;
-    --text-secondary: #8A8F84;
-    --text-muted: #4A4F45;
-    --anchor-color: #F5C842;
-    --primary-color: #6AB8F5;
-    --reset-color: #F5856A;
-    --optional-color: #B06AF5;
-    --tag-anchor-bg: rgba(245,200,66,0.12);
-    --tag-primary-bg: rgba(106,184,245,0.12);
-    --tag-reset-bg: rgba(245,133,106,0.12);
-    --tag-optional-bg: rgba(176,106,245,0.12);
-  }
+/* ── PICKER OVERLAY ── */
+#picker-overlay{
+  position:fixed;inset:0;background:rgba(13,15,14,0.96);
+  display:flex;align-items:center;justify-content:center;
+  z-index:100;
+}
+#picker-overlay.hidden{display:none}
+.picker-box{
+  background:var(--surf);border:1px solid var(--border);border-radius:20px;
+  padding:52px 56px;max-width:780px;width:100%;
+}
+.picker-brand{font-family:'Playfair Display',serif;font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--accent);margin-bottom:8px}
+.picker-title{font-family:'Playfair Display',serif;font-size:32px;color:var(--t1);line-height:1.1;margin-bottom:8px}
+.picker-date{font-family:'DM Mono',monospace;font-size:13px;color:var(--t3);margin-bottom:36px}
+.picker-label{font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--t3);margin-bottom:16px}
+.picker-cards{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:32px}
+.picker-card{
+  background:var(--surf2);border:1px solid var(--border);border-radius:14px;
+  padding:22px 20px;cursor:pointer;transition:border-color .16s,background .16s;
+  position:relative;overflow:hidden;
+}
+.picker-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px}
+.picker-card.t-standard::before{background:linear-gradient(90deg,var(--c-anchor),var(--c-primary))}
+.picker-card.t-minimal::before{background:linear-gradient(90deg,var(--c-reset),var(--c-anchor))}
+.picker-card.t-highperf::before{background:linear-gradient(90deg,var(--c-primary),var(--c-build))}
+.picker-card:hover{border-color:var(--border-hi);background:var(--surf3)}
+.picker-card.selected{border-color:var(--accent);background:var(--accent-d)}
+.picker-card-name{font-size:15px;font-weight:600;color:var(--t1);margin-bottom:5px}
+.picker-card-sub{font-size:12px;color:var(--t2);line-height:1.5;margin-bottom:14px}
+.picker-card-blocks{display:flex;flex-direction:column;gap:4px}
+.pblock{display:flex;align-items:center;gap:7px;font-size:11px;color:var(--t2)}
+.pblock-dot{width:7px;height:7px;border-radius:2px;flex-shrink:0}
+.picker-go{
+  width:100%;padding:14px;border-radius:12px;
+  background:var(--accent);color:#0D0F0E;
+  font-family:'DM Sans',sans-serif;font-size:15px;font-weight:600;
+  border:none;cursor:pointer;transition:opacity .16s;
+  letter-spacing:.02em;
+}
+.picker-go:hover{opacity:.88}
+.picker-go:disabled{opacity:.35;cursor:not-allowed}
 
-  html, body {
-    width: 1366px;
-    min-height: 1024px;
-    background: var(--bg);
-    font-family: 'DM Sans', sans-serif;
-    color: var(--text-primary);
-    -webkit-font-smoothing: antialiased;
-  }
-
-  .page {
-    width: 1366px;
-    min-height: 1024px;
-    display: grid;
-    grid-template-columns: 300px 1fr;
-    overflow: hidden;
-    position: relative;
-  }
-
-  .page::before {
-    content: '';
-    position: fixed;
-    top: -200px; left: -100px;
-    width: 600px; height: 600px;
-    background: radial-gradient(circle, rgba(200,245,106,0.05) 0%, transparent 70%);
-    pointer-events: none;
-  }
-
-  /* ── SIDEBAR ── */
-  .sidebar {
-    background: var(--surface);
-    border-right: 1px solid var(--border);
-    padding: 44px 32px;
-    display: flex;
-    flex-direction: column;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .sidebar::after {
-    content: '';
-    position: absolute;
-    bottom: 0; left: 0; right: 0; height: 200px;
-    background: linear-gradient(to top, rgba(200,245,106,0.04), transparent);
-    pointer-events: none;
-  }
-
-  .brand {
-    font-family: 'Playfair Display', serif;
-    font-size: 10px; font-weight: 600;
-    letter-spacing: 0.22em; text-transform: uppercase;
-    color: var(--accent); margin-bottom: 10px;
-  }
-
-  .sidebar-title {
-    font-family: 'Playfair Display', serif;
-    font-size: 26px; font-weight: 700; line-height: 1.15;
-    color: var(--text-primary); margin-bottom: 16px;
-  }
-
-  .sidebar-tagline {
-    font-size: 12.5px; color: var(--text-secondary);
-    line-height: 1.65; margin-bottom: 36px;
-  }
-
-  .divider { height: 1px; background: var(--border); margin-bottom: 32px; }
-
-  .outputs-label {
-    font-size: 10px; font-weight: 600;
-    letter-spacing: 0.18em; text-transform: uppercase;
-    color: var(--text-muted); margin-bottom: 20px;
-  }
-
-  .output-list { list-style: none; display: flex; flex-direction: column; gap: 16px; flex: 1; }
-  .output-item { display: flex; align-items: flex-start; gap: 12px; }
-  .output-bullet {
-    width: 5px; height: 5px; border-radius: 50%;
-    background: var(--accent); margin-top: 6px;
-    flex-shrink: 0; opacity: 0.6;
-  }
-  .output-text { font-size: 12.5px; color: var(--text-secondary); line-height: 1.5; }
-  .output-text strong {
-    display: block; font-size: 10px; font-weight: 600;
-    letter-spacing: 0.08em; text-transform: uppercase;
-    color: var(--text-muted); margin-bottom: 2px;
-  }
-
-  /* ── MAIN ── */
-  .main { display: flex; flex-direction: column; overflow: hidden; }
-
-  /* ── TOPBAR ── */
-  .topbar {
-    padding: 28px 44px 24px;
-    display: flex; align-items: center; justify-content: space-between;
-    border-bottom: 1px solid var(--border);
-    flex-shrink: 0;
-  }
-
-  .date-energy { display: flex; align-items: center; gap: 24px; }
-
-  .field-group { display: flex; flex-direction: column; gap: 5px; }
-
-  .field-label {
-    font-size: 10px; font-weight: 600;
-    letter-spacing: 0.18em; text-transform: uppercase; color: var(--text-muted);
-  }
-
-  .field-value {
-    display: flex; align-items: center; gap: 10px;
-    font-family: 'DM Mono', monospace; font-size: 13px;
-    color: var(--text-secondary); background: var(--surface2);
-    border: 1px solid var(--border); border-radius: 10px;
-    padding: 9px 16px; min-width: 150px; min-height: 42px;
-  }
-
-  .energy-dots { display: flex; gap: 6px; }
-  .energy-dot {
-    width: 10px; height: 10px; border-radius: 50%;
-    border: 1.5px solid var(--text-muted);
-    cursor: pointer; transition: background 0.2s, border-color 0.2s;
-  }
-  .energy-dot.filled { background: var(--accent); border-color: var(--accent); }
-
-  .topbar-right { display: flex; align-items: center; gap: 14px; }
-
-  .reorder-hint {
-    display: flex; align-items: center; gap: 6px;
-    font-size: 11px; color: var(--text-muted); opacity: 0.8;
-  }
-
-  .system-badge {
-    font-size: 11px; font-weight: 500; letter-spacing: 0.06em;
-    color: var(--accent); background: var(--accent-dim);
-    border: 1px solid rgba(200,245,106,0.2);
-    border-radius: 100px; padding: 7px 16px;
-  }
-
-  /* ── SCHEDULE ── */
-  .schedule {
-    padding: 22px 44px 20px;
-    flex: 1;
-    overflow-y: auto;
-  }
-
-  .schedule::-webkit-scrollbar { width: 4px; }
-  .schedule::-webkit-scrollbar-track { background: transparent; }
-  .schedule::-webkit-scrollbar-thumb { background: var(--text-muted); border-radius: 4px; }
-
-  .schedule-header { margin-bottom: 12px; }
-  .schedule-title {
-    font-size: 10px; font-weight: 600;
-    letter-spacing: 0.18em; text-transform: uppercase; color: var(--text-muted);
-  }
-
-  /* ── SCHEDULE ITEM ── */
-  .schedule-item {
-    border-radius: 14px;
-    border: 1px solid var(--border);
-    background: var(--surface);
-    margin-bottom: 8px;
-    position: relative;
-    overflow: hidden;
-    user-select: none;
-    transition: border-color 0.15s, opacity 0.15s;
-  }
-
-  .schedule-item::before {
-    content: '';
-    position: absolute; left: 0; top: 0; bottom: 0; width: 3px;
-  }
-  .schedule-item.anchor-row::before  { background: var(--anchor-color); }
-  .schedule-item.primary-row::before { background: var(--primary-color); }
-  .schedule-item.reset-row::before   { background: var(--reset-color); }
-  .schedule-item.optional-row::before{ background: var(--optional-color); }
-
-  .schedule-item.is-dragging { opacity: 0.35; }
-  .schedule-item.drag-over   { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
-
-  /* ── ROW MAIN ── */
-  .row-main {
-    display: grid;
-    grid-template-columns: 32px 136px 78px 1fr auto auto;
-    align-items: center;
-    gap: 12px;
-    padding: 15px 18px 15px 14px;
-    min-height: 62px;
-  }
-
-  .drag-handle {
-    display: flex; flex-direction: column;
-    align-items: center; justify-content: center;
-    gap: 3px; cursor: grab; padding: 6px;
-    opacity: 0; transition: opacity 0.15s;
-    border-radius: 6px;
-  }
-  .schedule-item:hover .drag-handle { opacity: 1; }
-  .drag-handle:hover { background: var(--surface2); }
-  .drag-handle:active { cursor: grabbing; }
-  .drag-handle span {
-    display: block; width: 14px; height: 1.5px;
-    background: var(--text-muted); border-radius: 2px;
-  }
-
-  .time-block {
-    font-family: 'DM Mono', monospace;
-    font-size: 11px; color: var(--text-muted); white-space: nowrap;
-  }
-
-  .tag {
-    font-size: 9.5px; font-weight: 600; letter-spacing: 0.1em;
-    text-transform: uppercase; border-radius: 6px;
-    padding: 4px 8px; text-align: center; white-space: nowrap;
-  }
-  .tag-anchor   { color: var(--anchor-color);   background: var(--tag-anchor-bg); }
-  .tag-primary  { color: var(--primary-color);  background: var(--tag-primary-bg); }
-  .tag-reset    { color: var(--reset-color);     background: var(--tag-reset-bg); }
-  .tag-optional { color: var(--optional-color);  background: var(--tag-optional-bg); }
-
-  .row-content { display: flex; flex-direction: column; gap: 3px; }
-  .row-title {
-    font-size: 14px; font-weight: 600; color: var(--text-primary); line-height: 1.2;
-    transition: opacity 0.2s;
-  }
-  .row-subtitle { font-size: 11.5px; color: var(--text-secondary); }
-
-  .schedule-item.done .row-title {
-    opacity: 0.4;
-    text-decoration: line-through;
-    text-decoration-color: var(--text-muted);
-  }
-
-  /* Notes toggle button */
-  .notes-btn {
-    display: flex; align-items: center; gap: 5px;
-    font-size: 11px; font-family: 'DM Sans', sans-serif;
-    color: var(--text-muted);
-    background: none; border: 1px solid var(--border);
-    border-radius: 7px; padding: 5px 10px; cursor: pointer;
-    transition: color 0.15s, border-color 0.15s, background 0.15s;
-    white-space: nowrap; flex-shrink: 0;
-  }
-  .notes-btn:hover { color: var(--text-secondary); border-color: var(--border-hover); background: var(--surface2); }
-  .notes-btn.has-notes {
-    color: var(--accent);
-    border-color: rgba(200,245,106,0.3);
-    background: var(--accent-dim);
-  }
-
-  /* Check circle */
-  .check-circle {
-    width: 26px; height: 26px; border-radius: 50%;
-    border: 1.5px solid var(--text-muted);
-    display: flex; align-items: center; justify-content: center;
-    flex-shrink: 0; cursor: pointer; transition: all 0.18s;
-  }
-  .check-circle:hover { border-color: var(--accent); }
-  .check-inner {
-    width: 9px; height: 9px; border-radius: 50%;
-    background: transparent; transition: background 0.18s;
-  }
-  .schedule-item.done .check-circle { border-color: var(--accent); background: var(--accent-dim); }
-  .schedule-item.done .check-inner  { background: var(--accent); }
-
-  /* ── NOTES AREA ── */
-  .notes-area {
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.22s ease;
-  }
-  .notes-area.open { max-height: 200px; }
-
-  .notes-inner {
-    padding: 0 18px 14px 62px;
-  }
-
-  .notes-divider { height: 1px; background: var(--border); margin-bottom: 10px; }
-
-  .notes-textarea {
-    width: 100%;
-    background: var(--surface3);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    color: var(--text-primary);
-    font-family: 'DM Sans', sans-serif;
-    font-size: 13px; line-height: 1.6;
-    padding: 10px 13px;
-    resize: vertical; min-height: 58px;
-    outline: none;
-    transition: border-color 0.15s;
-  }
-  .notes-textarea::placeholder { color: var(--text-muted); }
-  .notes-textarea:focus { border-color: rgba(200,245,106,0.3); }
-
-  /* ── FOOTER ── */
-  .footer {
-    padding: 14px 44px;
-    border-top: 1px solid var(--border);
-    display: flex; align-items: center; justify-content: space-between;
-    flex-shrink: 0;
-  }
-
-  .page-indicator { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--text-muted); }
-  .progress-row { display: flex; align-items: center; gap: 12px; }
-  .progress-label { font-size: 12px; color: var(--text-secondary); }
-  .progress-bar { width: 120px; height: 3px; background: var(--surface2); border-radius: 4px; overflow: hidden; }
-  .progress-fill { width: 0%; height: 100%; background: var(--accent); border-radius: 4px; transition: width 0.35s ease; }
-  .progress-count { font-family: 'DM Mono', monospace; font-size: 12px; color: var(--accent); }
+/* ── MAIN LAYOUT ── */
+.page{width:1366px;min-height:1024px;display:grid;grid-template-columns:296px 1fr}
+.page::before{content:'';position:fixed;top:-220px;left:-80px;width:560px;height:560px;background:radial-gradient(circle,rgba(200,245,106,0.045) 0%,transparent 68%);pointer-events:none}
+.sidebar{background:var(--surf);border-right:1px solid var(--border);padding:44px 30px;display:flex;flex-direction:column;position:relative;overflow:hidden}
+.sidebar::after{content:'';position:absolute;bottom:0;left:0;right:0;height:180px;background:linear-gradient(to top,rgba(200,245,106,0.035),transparent);pointer-events:none}
+.brand{font-family:'Playfair Display',serif;font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--accent);margin-bottom:10px}
+.sidebar-title{font-family:'Playfair Display',serif;font-size:25px;line-height:1.15;color:var(--t1);margin-bottom:14px}
+.sidebar-sub{font-size:12px;color:var(--t2);line-height:1.65;margin-bottom:34px}
+.divider{height:1px;background:var(--border);margin-bottom:28px}
+.out-label{font-size:10px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--t3);margin-bottom:18px}
+.out-list{list-style:none;display:flex;flex-direction:column;gap:14px;flex:1}
+.out-item{display:flex;gap:11px;align-items:flex-start}
+.out-dot{width:5px;height:5px;border-radius:50%;background:var(--accent);opacity:.55;flex-shrink:0;margin-top:6px}
+.out-text{font-size:12px;color:var(--t2);line-height:1.5}
+.out-text b{display:block;font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--t3);margin-bottom:1px}
+.template-badge{margin-top:auto;padding-top:24px;display:flex;flex-direction:column;gap:8px}
+.tmpl-label{font-size:10px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--t3)}
+.tmpl-pill{display:inline-flex;align-items:center;gap:6px;background:var(--accent-d);border:1px solid var(--accent-b);border-radius:100px;padding:6px 14px;font-size:12px;color:var(--accent)}
+.main{display:flex;flex-direction:column;overflow:hidden}
+.topbar{padding:26px 42px 22px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);flex-shrink:0}
+.topbar-left{display:flex;align-items:center;gap:22px}
+.field{display:flex;flex-direction:column;gap:4px}
+.field-lbl{font-size:10px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--t3)}
+.field-val{display:flex;align-items:center;gap:8px;font-family:'DM Mono',monospace;font-size:12.5px;color:var(--t2);background:var(--surf2);border:1px solid var(--border);border-radius:10px;padding:8px 15px;min-width:148px;min-height:40px}
+.energy-dots{display:flex;gap:6px}
+.e-dot{width:10px;height:10px;border-radius:50%;border:1.5px solid var(--t3);cursor:pointer;transition:background .18s,border-color .18s;padding:7px;margin:-7px}
+.e-dot.on{background:var(--accent);border-color:var(--accent)}
+.topbar-right{display:flex;align-items:center;gap:12px}
+.drag-hint{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--t3)}
+.badge{font-size:11px;font-weight:500;letter-spacing:.05em;color:var(--accent);background:var(--accent-d);border:1px solid var(--accent-b);border-radius:100px;padding:6px 15px}
+.schedule{padding:20px 42px 18px;flex:1;overflow-y:auto}
+.schedule::-webkit-scrollbar{width:3px}
+.schedule::-webkit-scrollbar-thumb{background:var(--t3);border-radius:3px}
+.sch-label{font-size:10px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--t3);margin-bottom:10px}
+.card{border-radius:13px;border:1px solid var(--border);background:var(--surf);margin-bottom:7px;position:relative;overflow:hidden;will-change:opacity;transition:border-color .14s}
+.card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px}
+.card[data-type="anchor"]::before{background:var(--c-anchor)}
+.card[data-type="primary"]::before{background:var(--c-primary)}
+.card[data-type="reset"]::before{background:var(--c-reset)}
+.card[data-type="optional"]::before{background:var(--c-opt)}
+.card[data-type="build"]::before{background:var(--c-build)}
+.card.dragging{opacity:.3}
+.card.drag-over{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
+.card.done .row-title{opacity:.38;text-decoration:line-through;text-decoration-color:var(--t3)}
+.card.done .check-ring{border-color:var(--accent);background:var(--accent-d)}
+.card.done .check-dot{background:var(--accent)}
+.row-main{display:grid;grid-template-columns:30px 160px 76px 1fr auto auto;align-items:center;gap:11px;padding:14px 17px 14px 13px;min-height:60px}
+.handle{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:grab;padding:6px;border-radius:6px;opacity:0;transition:opacity .14s}
+.card:hover .handle{opacity:1}
+.handle:hover{background:var(--surf2)}
+.handle:active{cursor:grabbing}
+.handle i{display:block;width:13px;height:1.5px;background:var(--t3);border-radius:2px}
+.time{font-family:'DM Mono',monospace;font-size:10px;color:var(--t2);white-space:nowrap;cursor:pointer;display:flex;align-items:center;gap:5px;border-radius:6px;padding:3px 5px;margin:-3px -5px;transition:background .14s}
+.time:hover{background:var(--surf2)}
+.time-dot{width:5px;height:5px;border-radius:50%;background:var(--accent);flex-shrink:0;display:none}
+.time.custom .time-dot{display:block}
+.time-editor{display:flex;align-items:center;gap:5px;background:var(--surf2);border:1px solid var(--border-hi);border-radius:8px;padding:4px 8px}
+.time-editor input{font-family:'DM Mono',monospace;font-size:10px;background:none;border:none;outline:none;color:var(--t1);width:60px;padding:0}
+.time-editor input:focus{color:var(--accent)}
+.time-sep{font-size:10px;color:var(--t3);font-family:'DM Mono',monospace;flex-shrink:0}
+.time-save{font-size:10px;font-family:'DM Sans',sans-serif;font-weight:500;background:var(--accent);color:#0D0F0E;border:none;border-radius:5px;padding:3px 8px;cursor:pointer;flex-shrink:0}
+.time-cancel{font-size:12px;color:var(--t3);background:none;border:none;cursor:pointer;padding:0 2px;line-height:1;flex-shrink:0}
+.time-cancel:hover{color:var(--t2)}
+.tag{font-size:9px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;border-radius:5px;padding:4px 8px;text-align:center;white-space:nowrap}
+.tag-anchor{color:var(--c-anchor);background:var(--bg-anchor)}
+.tag-primary{color:var(--c-primary);background:var(--bg-primary)}
+.tag-reset{color:var(--c-reset);background:var(--bg-reset)}
+.tag-optional{color:var(--c-opt);background:var(--bg-opt)}
+.tag-build{color:var(--c-build);background:var(--bg-build)}
+.row-body{display:flex;flex-direction:column;gap:2px}
+.row-title{font-size:13.5px;font-weight:600;color:var(--t1);line-height:1.2}
+.row-sub{font-size:11px;color:var(--t2)}
+.notes-btn{display:flex;align-items:center;gap:5px;font-size:10.5px;font-family:'DM Sans',sans-serif;color:var(--t3);background:none;border:1px solid var(--border);border-radius:7px;padding:5px 9px;cursor:pointer;white-space:nowrap;transition:color .14s,border-color .14s,background .14s;min-height:32px}
+.notes-btn:hover{color:var(--t2);border-color:var(--border-hi);background:var(--surf2)}
+.notes-btn.live{color:var(--accent);border-color:var(--accent-b);background:var(--accent-d)}
+.check-ring{width:25px;height:25px;border-radius:50%;border:1.5px solid var(--t3);display:flex;align-items:center;justify-content:center;flex-shrink:0;cursor:pointer;transition:border-color .16s,background .16s}
+.check-ring:hover{border-color:var(--accent)}
+.check-dot{width:9px;height:9px;border-radius:50%;background:transparent;transition:background .16s}
+.notes-area{max-height:0;overflow:hidden;transition:max-height .2s cubic-bezier(.4,0,.2,1)}
+.notes-area.open{max-height:160px}
+.notes-inner{padding:0 17px 13px 57px}
+.notes-sep{height:1px;background:var(--border);margin-bottom:9px}
+textarea.note{width:100%;background:var(--surf3);border:1px solid var(--border);border-radius:9px;color:var(--t1);font-family:'DM Sans',sans-serif;font-size:12.5px;line-height:1.6;padding:9px 12px;resize:vertical;min-height:54px;outline:none;transition:border-color .14s}
+textarea.note::placeholder{color:var(--t3)}
+textarea.note:focus{border-color:var(--accent-b)}
+.footer{padding:13px 42px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.pg{font-family:'DM Mono',monospace;font-size:10.5px;color:var(--t3)}
+.prog-row{display:flex;align-items:center;gap:11px}
+.prog-lbl{font-size:11.5px;color:var(--t2)}
+.prog-bar{width:110px;height:3px;background:var(--surf2);border-radius:3px;overflow:hidden}
+.prog-fill{height:100%;background:var(--accent);border-radius:3px;transition:width .32s ease;width:0%}
+.prog-ct{font-family:'DM Mono',monospace;font-size:11.5px;color:var(--accent)}
+.reset-btn{font-size:10px;color:var(--t3);background:none;border:none;cursor:pointer;text-decoration:underline;padding:0}
+.reset-btn:hover{color:var(--t2)}
+.change-tmpl-btn{font-size:10px;color:var(--t3);background:none;border:1px solid var(--border);border-radius:6px;cursor:pointer;padding:4px 10px;transition:color .14s,border-color .14s}
+.change-tmpl-btn:hover{color:var(--t2);border-color:var(--border-hi)}
 </style>
 </head>
 <body>
-<div class="page">
 
-  <!-- SIDEBAR -->
+<!-- PICKER OVERLAY -->
+<div id="picker-overlay">
+  <div class="picker-box">
+    <div class="picker-brand">Anchor Mode</div>
+    <h1 class="picker-title">Good morning.</h1>
+    <div class="picker-date" id="picker-date"></div>
+    <p class="picker-label">Choose today's schedule</p>
+    <div class="picker-cards">
+
+      <div class="picker-card t-standard" data-tmpl="standard" onclick="selectTemplate('standard')">
+        <div class="picker-card-name">Standard day</div>
+        <div class="picker-card-sub">Consistent energy · most days · built around the gym as anchor</div>
+        <div class="picker-card-blocks">
+          <div class="pblock"><div class="pblock-dot" style="background:var(--c-anchor)"></div>Morning ritual</div>
+          <div class="pblock"><div class="pblock-dot" style="background:var(--c-anchor)"></div>Gym (2 hrs)</div>
+          <div class="pblock"><div class="pblock-dot" style="background:var(--c-primary)"></div>Deep work — applications</div>
+          <div class="pblock"><div class="pblock-dot" style="background:var(--c-reset)"></div>Lunch + break</div>
+          <div class="pblock"><div class="pblock-dot" style="background:var(--c-primary)"></div>Networking + admin</div>
+          <div class="pblock"><div class="pblock-dot" style="background:var(--c-build)"></div>Skill + identity block</div>
+          <div class="pblock"><div class="pblock-dot" style="background:var(--c-reset)"></div>Shutdown ritual</div>
+        </div>
+      </div>
+
+      <div class="picker-card t-minimal" data-tmpl="minimal" onclick="selectTemplate('minimal')">
+        <div class="picker-card-name">Minimal day</div>
+        <div class="picker-card-sub">Low energy · rough week · just stay in motion</div>
+        <div class="picker-card-blocks">
+          <div class="pblock"><div class="pblock-dot" style="background:var(--c-anchor)"></div>Slow morning</div>
+          <div class="pblock"><div class="pblock-dot" style="background:var(--c-primary)"></div>One small win</div>
+          <div class="pblock"><div class="pblock-dot" style="background:var(--c-anchor)"></div>Gym (2 hrs)</div>
+          <div class="pblock"><div class="pblock-dot" style="background:var(--c-reset)"></div>Lunch</div>
+          <div class="pblock"><div class="pblock-dot" style="background:var(--c-primary)"></div>1 application</div>
+          <div class="pblock"><div class="pblock-dot" style="background:var(--c-build)"></div>Something generative</div>
+          <div class="pblock"><div class="pblock-dot" style="background:var(--c-reset)"></div>Hard stop</div>
+        </div>
+      </div>
+
+      <div class="picker-card t-highperf" data-tmpl="highperf" onclick="selectTemplate('highperf')">
+        <div class="picker-card-name">High-performance day</div>
+        <div class="picker-card-sub">Peak energy · strong momentum · fully optimized</div>
+        <div class="picker-card-blocks">
+          <div class="pblock"><div class="pblock-dot" style="background:var(--c-anchor)"></div>Morning protocol</div>
+          <div class="pblock"><div class="pblock-dot" style="background:var(--c-anchor)"></div>Gym (2 hrs)</div>
+          <div class="pblock"><div class="pblock-dot" style="background:var(--c-primary)"></div>Deep work — 2 applications</div>
+          <div class="pblock"><div class="pblock-dot" style="background:var(--c-primary)"></div>Networking sprint</div>
+          <div class="pblock"><div class="pblock-dot" style="background:var(--c-reset)"></div>Real lunch break</div>
+          <div class="pblock"><div class="pblock-dot" style="background:var(--c-build)"></div>Skill building (2 hrs)</div>
+          <div class="pblock"><div class="pblock-dot" style="background:var(--c-primary)"></div>Admin + tracker</div>
+          <div class="pblock"><div class="pblock-dot" style="background:var(--c-reset)"></div>Shutdown ritual</div>
+        </div>
+      </div>
+
+    </div>
+    <button class="picker-go" id="picker-go" onclick="confirmTemplate()" disabled>Start day</button>
+  </div>
+</div>
+
+<!-- MAIN APP -->
+<div class="page">
   <aside class="sidebar">
     <div class="brand">Anchor Mode</div>
     <h1 class="sidebar-title">Daily Job<br>Search<br>System</h1>
-    <p class="sidebar-tagline">A structured schedule for consistent results — built around the gym as the anchor habit.</p>
+    <p class="sidebar-sub">A structured schedule for consistent results — built around the gym as the anchor habit.</p>
     <div class="divider"></div>
-    <p class="outputs-label">Today's Outputs</p>
-    <ul class="output-list">
-      <li class="output-item"><div class="output-bullet"></div><div class="output-text"><strong>Morning Setup</strong>Clear head and a written intention for the day</div></li>
-      <li class="output-item"><div class="output-bullet"></div><div class="output-text"><strong>Gym</strong>Physical reset before deep work begins</div></li>
-      <li class="output-item"><div class="output-bullet"></div><div class="output-text"><strong>Deep Work Block</strong>2–3 tailored applications submitted</div></li>
-      <li class="output-item"><div class="output-bullet"></div><div class="output-text"><strong>Break</strong>Real food, no screens — actual rest</div></li>
-      <li class="output-item"><div class="output-bullet"></div><div class="output-text"><strong>Secondary Work</strong>Tracker reflects today's reality</div></li>
-      <li class="output-item"><div class="output-bullet"></div><div class="output-text"><strong>Follow-Up</strong>Every open thread has a next step</div></li>
-      <li class="output-item"><div class="output-bullet"></div><div class="output-text"><strong>Light Optimization</strong>Tomorrow starts already loaded</div></li>
+    <p class="out-label">Today's outputs</p>
+    <ul class="out-list">
+      <li class="out-item"><div class="out-dot"></div><div class="out-text"><b>Morning Setup</b>Clear head and written intention</div></li>
+      <li class="out-item"><div class="out-dot"></div><div class="out-text"><b>Gym</b>Physical reset before deep work</div></li>
+      <li class="out-item"><div class="out-dot"></div><div class="out-text"><b>Deep Work</b>2 tailored applications submitted</div></li>
+      <li class="out-item"><div class="out-dot"></div><div class="out-text"><b>Break</b>Real food, no screens — actual rest</div></li>
+      <li class="out-item"><div class="out-dot"></div><div class="out-text"><b>Networking</b>Every open thread has a next step</div></li>
+      <li class="out-item"><div class="out-dot"></div><div class="out-text"><b>Skill Block</b>Something that compounds over time</div></li>
+      <li class="out-item"><div class="out-dot"></div><div class="out-text"><b>Shutdown</b>Tomorrow starts already loaded</div></li>
     </ul>
+    <div class="template-badge">
+      <span class="tmpl-label">Today's template</span>
+      <span class="tmpl-pill" id="sidebar-tmpl-name">—</span>
+    </div>
   </aside>
 
-  <!-- MAIN -->
   <div class="main">
-
-    <!-- TOPBAR -->
     <div class="topbar">
-      <div class="date-energy">
-        <div class="field-group">
-          <span class="field-label">Date</span>
-          <div class="field-value" id="date-display"></div>
+      <div class="topbar-left">
+        <div class="field">
+          <span class="field-lbl">Date</span>
+          <div class="field-val" id="js-date"></div>
         </div>
-        <div class="field-group">
-          <span class="field-label">Energy</span>
-          <div class="field-value">
-            <div class="energy-dots">
-              <div class="energy-dot" onclick="setEnergy(1)"></div>
-              <div class="energy-dot" onclick="setEnergy(2)"></div>
-              <div class="energy-dot" onclick="setEnergy(3)"></div>
-              <div class="energy-dot" onclick="setEnergy(4)"></div>
-              <div class="energy-dot" onclick="setEnergy(5)"></div>
+        <div class="field">
+          <span class="field-lbl">Energy</span>
+          <div class="field-val">
+            <div class="energy-dots" id="js-energy">
+              <div class="e-dot" data-e="1"></div>
+              <div class="e-dot" data-e="2"></div>
+              <div class="e-dot" data-e="3"></div>
+              <div class="e-dot" data-e="4"></div>
+              <div class="e-dot" data-e="5"></div>
             </div>
           </div>
         </div>
       </div>
       <div class="topbar-right">
-        <div class="reorder-hint">
-          <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
-            <path d="M1.5 3.5h10M1.5 6.5h10M1.5 9.5h10" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
-          </svg>
+        <div class="drag-hint">
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M1 2.5h10M1 5.5h10M1 8.5h10" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
           Drag to reorder
         </div>
-        <div class="system-badge">A Daily Operating System</div>
+        <div class="badge">A Daily Operating System</div>
       </div>
     </div>
-
-    <!-- SCHEDULE -->
     <div class="schedule">
-      <div class="schedule-header">
-        <span class="schedule-title">Schedule</span>
-      </div>
-      <div id="schedule-list"></div>
+      <div class="sch-label">Schedule</div>
+      <div id="js-list"></div>
     </div>
-
-    <!-- FOOTER -->
     <div class="footer">
-      <span class="page-indicator">DAILY JOB SEARCH SYSTEM — Page 1 of 2</span>
-      <div class="progress-row">
-        <span class="progress-label">Today's progress</span>
-        <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
-        <span class="progress-count" id="progress-count">0 / 7</span>
+      <div style="display:flex;align-items:center;gap:14px">
+        <span class="pg">ANCHOR MODE — Daily Job Search System</span>
+        <button class="reset-btn" id="js-reset">Reset day</button>
+        <button class="change-tmpl-btn" id="js-change-tmpl">Change template</button>
+      </div>
+      <div class="prog-row">
+        <span class="prog-lbl">Today's progress</span>
+        <div class="prog-bar"><div class="prog-fill" id="js-prog"></div></div>
+        <span class="prog-ct" id="js-ct">0 / 0</span>
       </div>
     </div>
-
   </div>
 </div>
 
 <script>
-  // ── Data ──
-  const ITEMS = [
-    { id: 'morning',   time: '7:30 – 8:30 AM',     type: 'anchor',   tag: 'Anchor',   title: 'Morning Setup',      sub: 'Wake up, breakfast, light planning' },
-    { id: 'gym',       time: '8:30 – 9:45 AM',     type: 'anchor',   tag: 'Anchor',   title: 'Gym',                sub: 'Strength or cardio session' },
-    { id: 'deepwork',  time: '10:30 AM – 1:00 PM', type: 'primary',  tag: 'Primary',  title: 'Deep Work Block',    sub: 'Apply to 2–3 high-quality roles · Tailor resume to each posting' },
-    { id: 'break',     time: '1:00 – 2:00 PM',     type: 'reset',    tag: 'Reset',    title: 'Break',              sub: 'Lunch and reset' },
-    { id: 'secondary', time: '2:00 – 4:00 PM',     type: 'primary',  tag: 'Primary',  title: 'Secondary Work',     sub: 'Apply to 1–2 more roles · Update tracker' },
-    { id: 'followup',  time: '4:00 – 5:00 PM',     type: 'primary',  tag: 'Primary',  title: 'Follow-Up',          sub: 'Send follow-ups · Check portals' },
-    { id: 'optimize',  time: '7:00 – 8:00 PM',     type: 'optional', tag: 'Optional', title: 'Light Optimization', sub: "Optional resume improvement · Plan tomorrow's three priorities" },
-  ];
+'use strict';
 
-  const state = {
-    order: ITEMS.map(i => i.id),
-    done: {},
-    notes: {},
-    openNotes: {},
-  };
-
-  // ── Render ──
-  function render() {
-    const list = document.getElementById('schedule-list');
-
-    // Preserve textarea values before clearing
-    list.querySelectorAll('.notes-textarea').forEach(ta => {
-      state.notes[ta.dataset.id] = ta.value;
-    });
-
-    list.innerHTML = '';
-    state.order.forEach(id => {
-      const item = ITEMS.find(i => i.id === id);
-      if (item) list.appendChild(buildCard(item));
-    });
-
-    attachDrag();
-    updateProgress();
+const TEMPLATES = {
+  standard: {
+    name: 'Standard day',
+    items: [
+      {id:'s-morning', time:'7:00 – 7:30 AM',  type:'anchor',  tag:'Anchor',  title:'Morning ritual',       sub:'No phone. Sunlight, water, journal 3 intentions. Dress as if going to work.'},
+      {id:'s-gym',     time:'7:30 – 9:30 AM',  type:'anchor',  tag:'Anchor',  title:'Gym',                  sub:'Full session — 2 hours. The cornerstone. Everything else flows from this.'},
+      {id:'s-setup',   time:'9:30 – 10:00 AM', type:'anchor',  tag:'Anchor',  title:'Day setup',            sub:'Review 3 priorities. Open tracker. No email yet — plan before you react.'},
+      {id:'s-deep',    time:'10:00 AM – 12:30 PM', type:'primary', tag:'Primary', title:'Deep work — applications', sub:'2 tailored applications max. Phone away, one tab, no notifications. Peak window.'},
+      {id:'s-lunch',   time:'12:30 – 2:00 PM', type:'reset',   tag:'Reset',   title:'Lunch + real break',   sub:'Cook. Walk outside. No screens. This is load-bearing — skip it and the afternoon fails.'},
+      {id:'s-network', time:'2:00 – 3:00 PM',  type:'primary', tag:'Primary', title:'Networking + admin',   sub:'1 outreach, 1 follow-up, portals once. Batch it — no doom scrolling.'},
+      {id:'s-skill',   time:'3:00 – 5:00 PM',  type:'build',   tag:'Build',   title:'Skill + identity block', sub:'Course, portfolio, or creative work. Keeps identity intact beyond "job seeker."'},
+      {id:'s-shut',    time:'5:00 – 5:30 PM',  type:'reset',   tag:'Reset',   title:'Shutdown ritual',      sub:'Write 1 win. Set 3 priorities for tomorrow. Close laptop. Work is done.'},
+    ]
+  },
+  minimal: {
+    name: 'Minimal day',
+    items: [
+      {id:'m-morning', time:'8:30 – 9:00 AM',  type:'anchor',  tag:'Anchor',  title:'Slow morning',         sub:'Shower, breakfast, 10 min walk. Get dressed. No pressure — just start moving.'},
+      {id:'m-win',     time:'9:00 – 9:30 AM',  type:'primary', tag:'Primary', title:'One small win',        sub:'Update 1 line on your resume. Send 1 email. Do one thing before the gym.'},
+      {id:'m-gym',     time:'9:30 – 11:30 AM', type:'anchor',  tag:'Anchor',  title:'Gym',                  sub:'2 hours. Mid-morning placement works for low-energy days. Resets everything.'},
+      {id:'m-lunch',   time:'12:00 – 1:00 PM', type:'reset',   tag:'Reset',   title:'Lunch',                sub:'Cook something real. Sit down. Not in front of a screen.'},
+      {id:'m-app',     time:'1:00 – 3:00 PM',  type:'primary', tag:'Primary', title:'1 application',        sub:'One fully tailored application. That is the whole job for today. Quality over quantity.'},
+      {id:'m-gen',     time:'3:00 – 4:00 PM',  type:'build',   tag:'Build',   title:'Something generative', sub:'Project, creative outlet, or skill. Maintains identity beyond the search.'},
+      {id:'m-shut',    time:'4:00 – 4:30 PM',  type:'reset',   tag:'Reset',   title:'Hard stop',            sub:'Write 1 win. Close the laptop. The work is done for today.'},
+    ]
+  },
+  highperf: {
+    name: 'High-performance day',
+    items: [
+      {id:'h-morning', time:'6:00 – 6:30 AM',  type:'anchor',  tag:'Anchor',  title:'Morning protocol',     sub:'Sunlight, hydrate, journal, cold exposure. No phone. Prime before the day begins.'},
+      {id:'h-gym',     time:'6:30 – 8:30 AM',  type:'anchor',  tag:'Anchor',  title:'Gym',                  sub:'Full 2-hour session. Legs if it\'s leg day — train the largest group when freshest.'},
+      {id:'h-setup',   time:'8:30 – 9:00 AM',  type:'anchor',  tag:'Anchor',  title:'Day setup',            sub:'Protein breakfast, caffeine (90 min post-wake). Set 3 priorities. Open tracker.'},
+      {id:'h-deep',    time:'9:00 – 11:30 AM', type:'primary', tag:'Primary', title:'Deep work — applications', sub:'2 tailored applications. Full focus — peak cognitive window. Stop at 11:30 regardless.'},
+      {id:'h-network', time:'11:30 AM – 12:30 PM', type:'primary', tag:'Primary', title:'Networking sprint',    sub:'2 outreach messages, 1 follow-up, 1 informational call if possible. Batch — never scattered.'},
+      {id:'h-lunch',   time:'12:30 – 2:00 PM', type:'reset',   tag:'Reset',   title:'Real lunch break',     sub:'Cook. Walk. Call someone. No screens. Protects afternoon output.'},
+      {id:'h-skill',   time:'2:00 – 4:00 PM',  type:'build',   tag:'Build',   title:'Skill building',       sub:'Course, portfolio, or interview prep. 2 full hours. This is the long game.'},
+      {id:'h-admin',   time:'4:00 – 5:00 PM',  type:'primary', tag:'Primary', title:'Admin + tracker',      sub:'Follow-ups, portal checks, update job tracker. All admin lives here — not before.'},
+      {id:'h-shut',    time:'5:00 – 5:30 PM',  type:'reset',   tag:'Reset',   title:'Shutdown ritual',      sub:'3 wins, 3 priorities for tomorrow. Close everything. Done — not paused.'},
+    ]
   }
+};
 
-  function notesBtnHTML(hasNotes) {
-    return `<svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M1 2.5h10M1 5.5h7M1 8.5h5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>${hasNotes ? ' Notes' : ' Add note'}`;
+const STORE = 'anchor_mode_v2';
+function today(){ return new Date().toISOString().slice(0,10); }
+function load(){
+  try{ const r=localStorage.getItem(STORE); if(!r)return null; const s=JSON.parse(r); return s.date===today()?s:null; }catch{return null;}
+}
+function save(){
+  try{ localStorage.setItem(STORE,JSON.stringify({date:today(),template:ST.template,order:ST.order,done:ST.done,notes:ST.notes,openNotes:ST.openNotes,energy:ST.energy,customTimes:ST.customTimes})); }catch{}
+}
+
+const saved = load();
+const ST = {
+  template:  saved?.template  ?? null,
+  order:     saved?.order     ?? null,
+  done:      saved?.done      ?? {},
+  notes:     saved?.notes     ?? {},
+  openNotes:    saved?.openNotes    ?? {},
+  energy:       saved?.energy       ?? 0,
+  customTimes:  saved?.customTimes  ?? {},
+};
+
+let selectedTmpl = null;
+
+const overlay   = document.getElementById('picker-overlay');
+const goBtn     = document.getElementById('picker-go');
+const list      = document.getElementById('js-list');
+const progBar   = document.getElementById('js-prog');
+const progCt    = document.getElementById('js-ct');
+const tmplBadge = document.getElementById('sidebar-tmpl-name');
+
+document.getElementById('js-date').textContent =
+  new Date().toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'});
+document.getElementById('picker-date').textContent =
+  new Date().toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric',year:'numeric'});
+
+function selectTemplate(key){
+  selectedTmpl = key;
+  document.querySelectorAll('.picker-card').forEach(c=>c.classList.toggle('selected', c.dataset.tmpl===key));
+  goBtn.disabled = false;
+}
+
+function confirmTemplate(){
+  ST.template = selectedTmpl;
+  ST.order = TEMPLATES[selectedTmpl].items.map(i=>i.id);
+  ST.done = {}; ST.notes = {}; ST.openNotes = {};
+  save();
+  overlay.classList.add('hidden');
+  initApp();
+}
+
+function openPicker(){
+  selectedTmpl = ST.template || null;
+  if(selectedTmpl){
+    document.querySelectorAll('.picker-card').forEach(c=>c.classList.toggle('selected',c.dataset.tmpl===selectedTmpl));
+    goBtn.disabled = false;
+  } else {
+    document.querySelectorAll('.picker-card').forEach(c=>c.classList.remove('selected'));
+    goBtn.disabled = true;
   }
+  goBtn.textContent = ST.template ? 'Switch template' : 'Start day';
+  overlay.classList.remove('hidden');
+}
 
-  function buildCard(item) {
-    const card = document.createElement('div');
-    const isDone = !!state.done[item.id];
-    const isOpen = !!state.openNotes[item.id];
-    const noteVal = state.notes[item.id] || '';
-    const hasNotes = noteVal.trim().length > 0;
+function initApp(){
+  const t = TEMPLATES[ST.template];
+  tmplBadge.textContent = t.name;
+  renderList();
+  paintEnergy();
+}
 
-    card.className = `schedule-item ${item.type}-row${isDone ? ' done' : ''}`;
-    card.dataset.id = item.id;
+const energyCtr = document.getElementById('js-energy');
+function paintEnergy(){
+  energyCtr.querySelectorAll('.e-dot').forEach(d=>d.classList.toggle('on',+d.dataset.e<=ST.energy));
+}
+energyCtr.addEventListener('click',e=>{
+  const d=e.target.closest('.e-dot'); if(!d)return;
+  ST.energy=+d.dataset.e; paintEnergy(); save();
+});
 
-    card.innerHTML = `
-      <div class="row-main">
-        <div class="drag-handle" title="Drag to reorder">
-          <span></span><span></span><span></span>
-        </div>
-        <span class="time-block">${item.time}</span>
-        <span class="tag tag-${item.type}">${item.tag}</span>
-        <div class="row-content">
-          <span class="row-title">${item.title}</span>
-          <span class="row-subtitle">${item.sub}</span>
-        </div>
-        <button class="notes-btn${hasNotes ? ' has-notes' : ''}" data-id="${item.id}">${notesBtnHTML(hasNotes)}</button>
-        <div class="check-circle" data-id="${item.id}"><div class="check-inner"></div></div>
+const NOTES_SVG='<svg width="11" height="11" viewBox="0 0 11 11" fill="none"><path d="M1 2h9M1 5h6.5M1 8h4.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>';
+
+function getItems(){
+  const tmplItems = TEMPLATES[ST.template].items;
+  return ST.order.map(id=>tmplItems.find(i=>i.id===id)).filter(Boolean);
+}
+
+function displayTime(item){
+  return ST.customTimes[item.id] || item.time;
+}
+
+function buildTimeCell(item, card){
+  const hasCustom = !!ST.customTimes[item.id];
+  const timeSpan = card.querySelector('.time-label');
+  timeSpan.className = 'time time-label' + (hasCustom ? ' custom' : '');
+  timeSpan.innerHTML = (hasCustom ? '<span class="time-dot"></span>' : '') + displayTime(item);
+}
+
+function buildCard(item){
+  const card=document.createElement('div');
+  card.className='card'+(ST.done[item.id]?' done':'');
+  card.dataset.id=item.id; card.dataset.type=item.type;
+  const hasN=(ST.notes[item.id]||'').trim().length>0;
+  const isOpen=!!ST.openNotes[item.id];
+  const hasCustom=!!ST.customTimes[item.id];
+  const shownTime=displayTime(item);
+  card.innerHTML=`
+    <div class="row-main">
+      <div class="handle" title="Drag to reorder"><i></i><i></i><i></i></div>
+      <span class="time time-label${hasCustom?' custom':''}" data-action="time-view" title="Tap to edit time">${hasCustom?'<span class=\'time-dot\'></span>':''}${shownTime}</span>
+      <span class="tag tag-${item.type}">${item.tag}</span>
+      <div class="row-body">
+        <span class="row-title">${item.title}</span>
+        <span class="row-sub">${item.sub}</span>
       </div>
-      <div class="notes-area${isOpen ? ' open' : ''}" data-notes-area="${item.id}">
-        <div class="notes-inner">
-          <div class="notes-divider"></div>
-          <textarea class="notes-textarea" data-id="${item.id}" placeholder="Add notes for ${item.title}…">${noteVal}</textarea>
-        </div>
+      <button class="notes-btn${hasN?' live':''}" data-action="notes">${NOTES_SVG} ${hasN?'Notes':'Add note'}</button>
+      <div class="check-ring" data-action="check"><div class="check-dot"></div></div>
+    </div>
+    <div class="notes-area${isOpen?' open':''}">
+      <div class="notes-inner">
+        <div class="notes-sep"></div>
+        <textarea class="note" placeholder="Notes for ${item.title}\u2026">${ST.notes[item.id]||''}</textarea>
       </div>
-    `;
+    </div>`;
 
-    // Check toggle
-    card.querySelector('.check-circle').addEventListener('click', e => {
-      e.stopPropagation();
-      state.done[item.id] = !state.done[item.id];
-      card.classList.toggle('done', state.done[item.id]);
-      updateProgress();
+  // textarea
+  const ta=card.querySelector('textarea.note');
+  ta.addEventListener('input',()=>{
+    ST.notes[item.id]=ta.value;
+    const live=ta.value.trim().length>0;
+    const btn=card.querySelector('.notes-btn');
+    btn.classList.toggle('live',live);
+    btn.innerHTML=NOTES_SVG+' '+(live?'Notes':'Add note');
+    save();
+  });
+
+  // time tap — open inline editor
+  const timeLabel = card.querySelector('.time-label');
+  timeLabel.addEventListener('click', e => {
+    e.stopPropagation();
+    openTimeEditor(item, card, timeLabel);
+  });
+
+  return card;
+}
+
+function openTimeEditor(item, card, timeLabel){
+  // parse current displayed time into start / end
+  const current = displayTime(item);
+  const parts = current.split(/\s*[–\-]\s*/);
+  const startVal = parts[0]?.trim() || '';
+  const endVal   = parts[1]?.trim() || '';
+
+  const editor = document.createElement('div');
+  editor.className = 'time-editor';
+  editor.innerHTML = `
+    <input class="time-start" value="${startVal}" placeholder="9:00 AM" />
+    <span class="time-sep">–</span>
+    <input class="time-end" value="${endVal}" placeholder="11:00 AM" />
+    <button class="time-save">Save</button>
+    <button class="time-cancel">×</button>`;
+
+  // swap label for editor
+  const rowMain = card.querySelector('.row-main');
+  rowMain.replaceChild(editor, timeLabel);
+
+  const startIn = editor.querySelector('.time-start');
+  const endIn   = editor.querySelector('.time-end');
+  startIn.focus(); startIn.select();
+
+  // stop clicks inside editor from bubbling
+  editor.addEventListener('click', e => e.stopPropagation());
+
+  editor.querySelector('.time-save').addEventListener('click', e => {
+    e.stopPropagation();
+    const s = startIn.value.trim();
+    const en = endIn.value.trim();
+    if(s && en){
+      const newTime = s + ' – ' + en;
+      // if matches original, clear custom
+      if(newTime === item.time){ delete ST.customTimes[item.id]; }
+      else { ST.customTimes[item.id] = newTime; }
+    } else {
+      delete ST.customTimes[item.id];
+    }
+    save();
+    closeTimeEditor(item, card, editor);
+  });
+
+  editor.querySelector('.time-cancel').addEventListener('click', e => {
+    e.stopPropagation();
+    closeTimeEditor(item, card, editor);
+  });
+
+  // save on Enter
+  [startIn, endIn].forEach(inp => {
+    inp.addEventListener('keydown', e => {
+      if(e.key === 'Enter') editor.querySelector('.time-save').click();
+      if(e.key === 'Escape') editor.querySelector('.time-cancel').click();
     });
+  });
+}
 
-    // Notes toggle
-    const notesBtn = card.querySelector('.notes-btn');
-    const notesArea = card.querySelector('.notes-area');
-    notesBtn.addEventListener('click', e => {
-      e.stopPropagation();
-      state.openNotes[item.id] = !state.openNotes[item.id];
-      notesArea.classList.toggle('open', state.openNotes[item.id]);
-      if (state.openNotes[item.id]) {
-        setTimeout(() => card.querySelector('.notes-textarea').focus(), 50);
+function closeTimeEditor(item, card, editor){
+  const hasCustom = !!ST.customTimes[item.id];
+  const shownTime = displayTime(item);
+  const newLabel = document.createElement('span');
+  newLabel.className = 'time time-label' + (hasCustom ? ' custom' : '');
+  newLabel.dataset.action = 'time-view';
+  newLabel.title = 'Tap to edit time';
+  newLabel.innerHTML = (hasCustom ? '<span class="time-dot"></span>' : '') + shownTime;
+  newLabel.addEventListener('click', e => {
+    e.stopPropagation();
+    openTimeEditor(item, card, newLabel);
+  });
+  card.querySelector('.row-main').replaceChild(newLabel, editor);
+}
+
+function renderList(){
+  list.innerHTML='';
+  getItems().forEach(item=>{ if(item)list.appendChild(buildCard(item)); });
+  attachDrag();
+  updateProgress();
+}
+
+list.addEventListener('click',e=>{
+  const card=e.target.closest('.card'); if(!card)return;
+  const id=card.dataset.id;
+  const act=e.target.closest('[data-action]')?.dataset.action;
+  if(act==='check'){
+    ST.done[id]=!ST.done[id];
+    card.classList.toggle('done',ST.done[id]);
+    updateProgress(); save(); return;
+  }
+  if(act==='notes'){
+    e.stopPropagation();
+    ST.openNotes[id]=!ST.openNotes[id];
+    card.querySelector('.notes-area').classList.toggle('open',ST.openNotes[id]);
+    if(ST.openNotes[id])setTimeout(()=>card.querySelector('textarea.note').focus(),40);
+    save(); return;
+  }
+});
+list.addEventListener('click',e=>{ if(e.target.tagName==='TEXTAREA')e.stopPropagation(); });
+
+function updateProgress(){
+  const items=getItems();
+  const total=items.length;
+  const done=items.filter(i=>ST.done[i.id]).length;
+  progBar.style.width=(total?done/total*100:0)+'%';
+  progCt.textContent=done+' / '+total;
+}
+
+const drag={srcId:null,phase:'IDLE'};
+function attachDrag(){
+  list.querySelectorAll('.card').forEach(card=>{
+    const handle=card.querySelector('.handle');
+    handle.addEventListener('pointerdown',()=>card.setAttribute('draggable','true'));
+    card.addEventListener('dragstart',e=>{
+      if(drag.phase!=='IDLE')return;
+      drag.srcId=card.dataset.id; drag.phase='ACTIVE';
+      e.dataTransfer.effectAllowed='move';
+      e.dataTransfer.setData('text/plain',drag.srcId);
+      requestAnimationFrame(()=>card.classList.add('dragging'));
+    });
+    card.addEventListener('dragend',()=>{
+      card.classList.remove('dragging');
+      card.setAttribute('draggable','false');
+      list.querySelectorAll('.card').forEach(c=>c.classList.remove('drag-over'));
+      drag.srcId=null; drag.phase='IDLE';
+    });
+    card.addEventListener('dragover',e=>{
+      if(drag.phase!=='ACTIVE')return;
+      e.preventDefault(); e.dataTransfer.dropEffect='move';
+      if(card.dataset.id!==drag.srcId){
+        list.querySelectorAll('.card').forEach(c=>c.classList.remove('drag-over'));
+        card.classList.add('drag-over');
       }
     });
-
-    // Textarea interactions
-    const ta = card.querySelector('.notes-textarea');
-    ta.addEventListener('click', e => e.stopPropagation());
-    ta.addEventListener('input', e => {
-      state.notes[item.id] = e.target.value;
-      const hasN = e.target.value.trim().length > 0;
-      notesBtn.classList.toggle('has-notes', hasN);
-      notesBtn.innerHTML = notesBtnHTML(hasN);
+    card.addEventListener('dragleave',e=>{ if(!card.contains(e.relatedTarget))card.classList.remove('drag-over'); });
+    card.addEventListener('drop',e=>{
+      e.preventDefault(); if(drag.phase!=='ACTIVE')return;
+      const tgt=card.dataset.id;
+      if(drag.srcId&&tgt&&drag.srcId!==tgt){
+        const from=ST.order.indexOf(drag.srcId),to=ST.order.indexOf(tgt);
+        ST.order.splice(from,1); ST.order.splice(to,0,drag.srcId);
+        drag.phase='DROP'; save(); renderList();
+      }
     });
+  });
+}
 
-    return card;
-  }
+document.getElementById('js-reset').addEventListener('click',()=>{
+  if(!confirm("Reset today's progress, notes, and order?"))return;
+  ST.order=TEMPLATES[ST.template].items.map(i=>i.id);
+  ST.done={}; ST.notes={}; ST.openNotes={}; ST.energy=0; ST.customTimes={};
+  paintEnergy(); save(); renderList();
+});
 
-  // ── Drag & Drop ──
-  let dragSrcId = null;
-  let dragEl = null;
+document.getElementById('js-change-tmpl').addEventListener('click',openPicker);
 
-  function attachDrag() {
-    document.querySelectorAll('.schedule-item').forEach(card => {
-      const handle = card.querySelector('.drag-handle');
-
-      // Only start drag from handle
-      handle.addEventListener('mousedown', () => { card.setAttribute('draggable', 'true'); });
-      handle.addEventListener('touchstart', () => { card.setAttribute('draggable', 'true'); }, { passive: true });
-
-      card.addEventListener('dragstart', e => {
-        dragSrcId = card.dataset.id;
-        dragEl = card;
-        setTimeout(() => card.classList.add('is-dragging'), 0);
-        e.dataTransfer.effectAllowed = 'move';
-        e.dataTransfer.setData('text/plain', card.dataset.id);
-      });
-
-      card.addEventListener('dragend', () => {
-        card.classList.remove('is-dragging');
-        card.setAttribute('draggable', 'false');
-        document.querySelectorAll('.schedule-item').forEach(c => c.classList.remove('drag-over'));
-        dragSrcId = null;
-        dragEl = null;
-      });
-
-      card.addEventListener('dragover', e => {
-        e.preventDefault();
-        if (card.dataset.id !== dragSrcId) {
-          document.querySelectorAll('.schedule-item').forEach(c => c.classList.remove('drag-over'));
-          card.classList.add('drag-over');
-        }
-      });
-
-      card.addEventListener('dragleave', e => {
-        if (!card.contains(e.relatedTarget)) card.classList.remove('drag-over');
-      });
-
-      card.addEventListener('drop', e => {
-        e.preventDefault();
-        const targetId = card.dataset.id;
-        if (dragSrcId && targetId && dragSrcId !== targetId) {
-          const from = state.order.indexOf(dragSrcId);
-          const to   = state.order.indexOf(targetId);
-          state.order.splice(from, 1);
-          state.order.splice(to, 0, dragSrcId);
-          render();
-        }
-      });
-    });
-  }
-
-  // ── Progress ──
-  function updateProgress() {
-    const total = state.order.length;
-    const done  = state.order.filter(id => state.done[id]).length;
-    document.getElementById('progress-fill').style.width = (done / total * 100) + '%';
-    document.getElementById('progress-count').textContent = done + ' / ' + total;
-  }
-
-  // ── Date ──
-  document.getElementById('date-display').textContent =
-    new Date().toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
-
-  // ── Energy ──
-  function setEnergy(n) {
-    document.querySelectorAll('.energy-dot').forEach((dot, i) => {
-      dot.classList.toggle('filled', i < n);
-    });
-  }
-
-  // ── Init ──
-  render();
+if(saved && saved.template){
+  overlay.classList.add('hidden');
+  initApp();
+} else {
+  openPicker();
+}
 </script>
 </body>
 </html>
