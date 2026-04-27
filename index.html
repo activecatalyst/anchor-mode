@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=1366, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Anchor Mode — Daily Job Search System</title>
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230D0F0E'/%3E%3Ctext x='16' y='22' font-family='Georgia,serif' font-size='14' font-weight='700' fill='%23C8F56A' text-anchor='middle' letter-spacing='-0.5'%3EAM%3C/text%3E%3C/svg%3E">
 <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'%3E%3Crect width='180' height='180' rx='40' fill='%230D0F0E'/%3E%3Ctext x='90' y='122' font-family='Georgia,serif' font-size='80' font-weight='700' fill='%23C8F56A' text-anchor='middle' letter-spacing='-2'%3EAM%3C/text%3E%3C/svg%3E">
@@ -22,7 +22,7 @@
   --bg-anchor:rgba(245,200,66,0.11);--bg-primary:rgba(106,184,245,0.11);
   --bg-reset:rgba(245,133,106,0.11);--bg-opt:rgba(176,106,245,0.11);--bg-build:rgba(167,139,250,0.11);
 }
-html,body{width:1366px;min-height:1024px;background:var(--bg);font-family:'DM Sans',sans-serif;color:var(--t1);-webkit-font-smoothing:antialiased}
+html,body{width:100%;min-height:100vh;background:var(--bg);font-family:'DM Sans',sans-serif;color:var(--t1);-webkit-font-smoothing:antialiased}
 
 /* ── PICKER OVERLAY ── */
 #picker-overlay{
@@ -33,13 +33,13 @@ html,body{width:1366px;min-height:1024px;background:var(--bg);font-family:'DM Sa
 #picker-overlay.hidden{display:none}
 .picker-box{
   background:var(--surf);border:1px solid var(--border);border-radius:20px;
-  padding:52px 56px;max-width:780px;width:100%;
+  padding:clamp(24px,5vw,52px) clamp(20px,5vw,56px);max-width:780px;width:100%;
 }
 .picker-brand{font-family:'Playfair Display',serif;font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--accent);margin-bottom:8px}
-.picker-title{font-family:'Playfair Display',serif;font-size:32px;color:var(--t1);line-height:1.1;margin-bottom:8px}
+.picker-title{font-family:'Playfair Display',serif;font-size:clamp(22px,4vw,32px);color:var(--t1);line-height:1.1;margin-bottom:8px}
 .picker-date{font-family:'DM Mono',monospace;font-size:13px;color:var(--t3);margin-bottom:36px}
 .picker-label{font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--t3);margin-bottom:16px}
-.picker-cards{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:32px}
+.picker-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-bottom:28px}
 .picker-card{
   background:var(--surf2);border:1px solid var(--border);border-radius:14px;
   padding:22px 20px;cursor:pointer;transition:border-color .16s,background .16s;
@@ -67,12 +67,12 @@ html,body{width:1366px;min-height:1024px;background:var(--bg);font-family:'DM Sa
 .picker-go:disabled{opacity:.35;cursor:not-allowed}
 
 /* ── MAIN LAYOUT ── */
-.page{width:1366px;min-height:1024px;display:grid;grid-template-columns:296px 1fr}
+.page{width:100%;min-height:100vh;display:grid;grid-template-columns:280px 1fr}
 .page::before{content:'';position:fixed;top:-220px;left:-80px;width:560px;height:560px;background:radial-gradient(circle,rgba(200,245,106,0.045) 0%,transparent 68%);pointer-events:none}
-.sidebar{background:var(--surf);border-right:1px solid var(--border);padding:44px 30px;display:flex;flex-direction:column;position:relative;overflow:hidden}
+.sidebar{background:var(--surf);border-right:1px solid var(--border);padding:clamp(24px,3vw,44px) clamp(16px,2.5vw,30px);display:flex;flex-direction:column;position:relative;overflow:hidden}
 .sidebar::after{content:'';position:absolute;bottom:0;left:0;right:0;height:180px;background:linear-gradient(to top,rgba(200,245,106,0.035),transparent);pointer-events:none}
 .brand{font-family:'Playfair Display',serif;font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--accent);margin-bottom:10px}
-.sidebar-title{font-family:'Playfair Display',serif;font-size:25px;line-height:1.15;color:var(--t1);margin-bottom:14px}
+.sidebar-title{font-family:'Playfair Display',serif;font-size:clamp(18px,2vw,25px);line-height:1.15;color:var(--t1);margin-bottom:14px}
 .sidebar-sub{font-size:12px;color:var(--t2);line-height:1.65;margin-bottom:34px}
 .divider{height:1px;background:var(--border);margin-bottom:28px}
 .out-label{font-size:10px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--t3);margin-bottom:18px}
@@ -85,7 +85,7 @@ html,body{width:1366px;min-height:1024px;background:var(--bg);font-family:'DM Sa
 .tmpl-label{font-size:10px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--t3)}
 .tmpl-pill{display:inline-flex;align-items:center;gap:6px;background:var(--accent-d);border:1px solid var(--accent-b);border-radius:100px;padding:6px 14px;font-size:12px;color:var(--accent)}
 .main{display:flex;flex-direction:column;overflow:hidden}
-.topbar{padding:26px 42px 22px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);flex-shrink:0}
+.topbar{padding:clamp(14px,2vw,26px) max(clamp(16px,3vw,42px), env(safe-area-inset-right)) clamp(12px,1.5vw,22px);display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);flex-shrink:0;flex-wrap:wrap;gap:10px}
 .topbar-left{display:flex;align-items:center;gap:22px}
 .field{display:flex;flex-direction:column;gap:4px}
 .field-lbl{font-size:10px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--t3)}
@@ -96,7 +96,7 @@ html,body{width:1366px;min-height:1024px;background:var(--bg);font-family:'DM Sa
 .topbar-right{display:flex;align-items:center;gap:12px}
 .drag-hint{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--t3)}
 .badge{font-size:11px;font-weight:500;letter-spacing:.05em;color:var(--accent);background:var(--accent-d);border:1px solid var(--accent-b);border-radius:100px;padding:6px 15px}
-.schedule{padding:20px 42px 18px;flex:1;overflow-y:auto}
+.schedule{padding:clamp(14px,2vw,20px) clamp(16px,3vw,42px) 18px;flex:1;overflow-y:auto}
 .schedule::-webkit-scrollbar{width:3px}
 .schedule::-webkit-scrollbar-thumb{background:var(--t3);border-radius:3px}
 .sch-label{font-size:10px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--t3);margin-bottom:10px}
@@ -112,7 +112,7 @@ html,body{width:1366px;min-height:1024px;background:var(--bg);font-family:'DM Sa
 .card.done .row-title{opacity:.38;text-decoration:line-through;text-decoration-color:var(--t3)}
 .card.done .check-ring{border-color:var(--accent);background:var(--accent-d)}
 .card.done .check-dot{background:var(--accent)}
-.row-main{display:grid;grid-template-columns:30px 160px 76px 1fr auto auto;align-items:center;gap:11px;padding:14px 17px 14px 13px;min-height:60px}
+.row-main{display:grid;grid-template-columns:28px minmax(100px,160px) 70px 1fr auto auto;align-items:center;gap:8px;padding:12px 14px 12px 12px;min-height:58px}
 .handle{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:grab;padding:6px;border-radius:6px;opacity:0;transition:opacity .14s}
 .card:hover .handle{opacity:1}
 .handle:hover{background:var(--surf2)}
@@ -146,12 +146,12 @@ html,body{width:1366px;min-height:1024px;background:var(--bg);font-family:'DM Sa
 .check-dot{width:9px;height:9px;border-radius:50%;background:transparent;transition:background .16s}
 .notes-area{max-height:0;overflow:hidden;transition:max-height .2s cubic-bezier(.4,0,.2,1)}
 .notes-area.open{max-height:160px}
-.notes-inner{padding:0 17px 13px 57px}
+.notes-inner{padding:0 14px 13px clamp(14px,4vw,57px)}
 .notes-sep{height:1px;background:var(--border);margin-bottom:9px}
 textarea.note{width:100%;background:var(--surf3);border:1px solid var(--border);border-radius:9px;color:var(--t1);font-family:'DM Sans',sans-serif;font-size:12.5px;line-height:1.6;padding:9px 12px;resize:vertical;min-height:54px;outline:none;transition:border-color .14s}
 textarea.note::placeholder{color:var(--t3)}
 textarea.note:focus{border-color:var(--accent-b)}
-.footer{padding:13px 42px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.footer{padding:12px max(clamp(16px,3vw,42px), env(safe-area-inset-right)) 12px max(clamp(16px,3vw,42px), env(safe-area-inset-left));border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;flex-wrap:wrap;gap:8px}
 .pg{font-family:'DM Mono',monospace;font-size:10.5px;color:var(--t3)}
 .prog-row{display:flex;align-items:center;gap:11px}
 .prog-lbl{font-size:11.5px;color:var(--t2)}
@@ -161,7 +161,78 @@ textarea.note:focus{border-color:var(--accent-b)}
 .reset-btn{font-size:10px;color:var(--t3);background:none;border:none;cursor:pointer;text-decoration:underline;padding:0}
 .reset-btn:hover{color:var(--t2)}
 .change-tmpl-btn{font-size:10px;color:var(--t3);background:none;border:1px solid var(--border);border-radius:6px;cursor:pointer;padding:4px 10px;transition:color .14s,border-color .14s}
+.export-btn{font-size:10px;color:var(--t2);background:none;border:1px solid var(--border);border-radius:6px;cursor:pointer;padding:4px 10px;transition:color .14s,border-color .14s,background .14s;display:inline-flex;align-items:center;gap:5px}
+.export-btn:hover{color:var(--t1);border-color:var(--border-hi);background:var(--surf2)}
+.import-btn{font-size:10px;color:var(--t2);background:none;border:1px solid var(--border);border-radius:6px;cursor:pointer;padding:4px 10px;transition:color .14s,border-color .14s,background .14s;display:inline-flex;align-items:center;gap:5px}
+.import-btn:hover{color:var(--t1);border-color:var(--border-hi);background:var(--surf2)}
+#import-file{display:none}
+/* Toast */
+#toast{
+  position:fixed;bottom:32px;left:50%;transform:translateX(-50%) translateY(20px);
+  background:var(--surf2);border:1px solid var(--border-hi);border-radius:10px;
+  padding:10px 18px;font-size:12px;color:var(--t1);
+  opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;
+  z-index:200;white-space:nowrap;
+}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+#toast.success{border-color:var(--accent-b);color:var(--accent)}
+#toast.error{border-color:rgba(245,133,106,0.4);color:var(--c-reset)}
 .change-tmpl-btn:hover{color:var(--t2);border-color:var(--border-hi)}
+
+/* ── RESPONSIVE BREAKPOINTS ── */
+
+/* Tablet portrait / small tablet (≤900px) */
+@media(max-width:900px){
+  .page{grid-template-columns:1fr;grid-template-rows:auto 1fr}
+  .sidebar{
+    border-right:none;border-bottom:1px solid var(--border);
+    padding:20px 20px 16px;
+    flex-direction:row;flex-wrap:wrap;align-items:flex-start;gap:0;
+  }
+  .sidebar-title{font-size:18px;margin-bottom:6px;white-space:nowrap}
+  .sidebar-sub{display:none}
+  .divider{display:none}
+  .out-label{display:none}
+  .out-list{display:none}
+  .template-badge{margin-top:0;padding-top:0;margin-left:auto;align-self:center}
+  .sidebar-header{display:flex;flex-direction:column}
+  .main{min-height:0}
+}
+
+/* Phone landscape / mid mobile (≤680px) */
+@media(max-width:680px){
+  .picker-cards{grid-template-columns:1fr}
+  .picker-box{border-radius:16px}
+  .topbar{padding:12px 16px 10px}
+  .topbar-right{display:none}
+  .field-val{min-width:0;padding:7px 12px}
+  .schedule{padding:12px 14px 12px}
+  .row-main{grid-template-columns:24px 1fr auto;gap:8px;padding:12px 12px 12px 10px}
+  .row-main > .time-label{display:none}
+  .row-main > .tag{display:none}
+  .row-title{font-size:13px}
+  .row-sub{font-size:10.5px}
+  .notes-btn span{display:none}
+  .footer{padding:10px 14px;flex-direction:column;align-items:flex-start;gap:8px}
+  .prog-row{width:100%}
+  .prog-bar{flex:1}
+  .card::before{width:2px}
+}
+
+/* Phone portrait (≤420px) */
+@media(max-width:420px){
+  body{padding-bottom:env(safe-area-inset-bottom)}
+  .picker-box{padding:24px 18px;border-radius:0;min-height:100vh;border:none}
+  .picker-title{font-size:26px}
+  .sidebar{padding:14px 16px}
+  .sidebar-title{font-size:16px}
+  .topbar-left{flex-wrap:wrap;gap:10px}
+  .schedule{padding:10px 12px}
+  .row-main{grid-template-columns:1fr auto;gap:8px;padding:12px 10px}
+  .handle{display:none}
+  .drag-hint{display:none}
+  .notes-inner{padding:0 10px 12px 10px}
+}
 </style>
 </head>
 <body>
@@ -226,8 +297,8 @@ textarea.note:focus{border-color:var(--accent-b)}
 <!-- MAIN APP -->
 <div class="page">
   <aside class="sidebar">
-    <div class="brand">Anchor Mode</div>
-    <h1 class="sidebar-title">Daily Job<br>Search<br>System</h1>
+    <div class="sidebar-header"><div class="brand">Anchor Mode</div>
+    <h1 class="sidebar-title">Daily Job Search System</h1></div>
     <p class="sidebar-sub">A structured schedule for consistent results — built around the gym as the anchor habit.</p>
     <div class="divider"></div>
     <p class="out-label">Today's outputs</p>
@@ -283,6 +354,15 @@ textarea.note:focus{border-color:var(--accent-b)}
         <span class="pg">ANCHOR MODE — Daily Job Search System</span>
         <button class="reset-btn" id="js-reset">Reset day</button>
         <button class="change-tmpl-btn" id="js-change-tmpl">Change template</button>
+        <button class="export-btn" id="js-export">
+          <svg width="11" height="11" viewBox="0 0 11 11" fill="none"><path d="M5.5 1v6M2.5 5l3 3 3-3M1 9h9" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Export
+        </button>
+        <button class="import-btn" id="js-import-btn">
+          <svg width="11" height="11" viewBox="0 0 11 11" fill="none"><path d="M5.5 10V4M2.5 6l3-3 3 3M1 1h9" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Import
+        </button>
+        <input type="file" id="import-file" accept=".json">
       </div>
       <div class="prog-row">
         <span class="prog-lbl">Today's progress</span>
@@ -340,11 +420,18 @@ const TEMPLATES = {
 
 const STORE = 'anchor_mode_v2';
 function today(){ return new Date().toISOString().slice(0,10); }
+
+// Safe localStorage — falls back silently if unavailable (e.g. iframe, private mode)
+const LS = (() => {
+  try { localStorage.setItem('__am_test','1'); localStorage.removeItem('__am_test'); return localStorage; }
+  catch { return { getItem:()=>null, setItem:()=>{}, removeItem:()=>{} }; }
+})();
+
 function load(){
-  try{ const r=localStorage.getItem(STORE); if(!r)return null; const s=JSON.parse(r); return s.date===today()?s:null; }catch{return null;}
+  try{ const r=LS.getItem(STORE); if(!r)return null; const s=JSON.parse(r); return s.date===today()?s:null; }catch{return null;}
 }
 function save(){
-  try{ localStorage.setItem(STORE,JSON.stringify({date:today(),template:ST.template,order:ST.order,done:ST.done,notes:ST.notes,openNotes:ST.openNotes,energy:ST.energy,customTimes:ST.customTimes})); }catch{}
+  try{ LS.setItem(STORE,JSON.stringify({date:today(),template:ST.template,order:ST.order,done:ST.done,notes:ST.notes,openNotes:ST.openNotes,energy:ST.energy,customTimes:ST.customTimes})); }catch{}
 }
 
 const saved = load();
@@ -379,9 +466,10 @@ function selectTemplate(key){
 }
 
 function confirmTemplate(){
+  if(!selectedTmpl) return;
   ST.template = selectedTmpl;
   ST.order = TEMPLATES[selectedTmpl].items.map(i=>i.id);
-  ST.done = {}; ST.notes = {}; ST.openNotes = {};
+  ST.done = {}; ST.notes = {}; ST.openNotes = {}; ST.customTimes = {};
   save();
   overlay.classList.add('hidden');
   initApp();
@@ -401,6 +489,7 @@ function openPicker(){
 }
 
 function initApp(){
+  if(!ST.template || !TEMPLATES[ST.template]){ openPicker(); return; }
   const t = TEMPLATES[ST.template];
   tmplBadge.textContent = t.name;
   renderList();
@@ -419,8 +508,10 @@ energyCtr.addEventListener('click',e=>{
 const NOTES_SVG='<svg width="11" height="11" viewBox="0 0 11 11" fill="none"><path d="M1 2h9M1 5h6.5M1 8h4.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>';
 
 function getItems(){
+  if(!ST.template || !TEMPLATES[ST.template]) return [];
   const tmplItems = TEMPLATES[ST.template].items;
-  return ST.order.map(id=>tmplItems.find(i=>i.id===id)).filter(Boolean);
+  const order = ST.order || tmplItems.map(i=>i.id);
+  return order.map(id=>tmplItems.find(i=>i.id===id)).filter(Boolean);
 }
 
 function displayTime(item){
@@ -445,8 +536,8 @@ function buildCard(item){
   card.innerHTML=`
     <div class="row-main">
       <div class="handle" title="Drag to reorder"><i></i><i></i><i></i></div>
-      <span class="time time-label${hasCustom?' custom':''}" data-action="time-view" title="Tap to edit time">${hasCustom?'<span class=\'time-dot\'></span>':''}${shownTime}</span>
-      <span class="tag tag-${item.type}">${item.tag}</span>
+      <span class="time time-label${hasCustom?' custom':''}" data-action="time-view" title="Tap to edit time"${hasCustom?'<span class=\'time-dot\'></span>':''}${shownTime}</span>
+      <span class="tag tag-${item.type} tag-col">${item.tag}</span>
       <div class="row-body">
         <span class="row-title">${item.title}</span>
         <span class="row-sub">${item.sub}</span>
@@ -636,6 +727,78 @@ document.getElementById('js-reset').addEventListener('click',()=>{
 
 document.getElementById('js-change-tmpl').addEventListener('click',openPicker);
 
+/* ── EXPORT ── */
+document.getElementById('js-export').addEventListener('click', () => {
+  const data = {
+    version: 2,
+    exportedAt: new Date().toISOString(),
+    date: today(),
+    template: ST.template,
+    order: ST.order,
+    done: ST.done,
+    notes: ST.notes,
+    openNotes: ST.openNotes,
+    energy: ST.energy,
+    customTimes: ST.customTimes,
+  };
+  const blob = new Blob([JSON.stringify(data, null, 2)], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'anchor-mode-' + new Date().toISOString().slice(0,10) + '.json';
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('Saved to iCloud Drive ↓', 'success');
+});
+
+/* ── IMPORT ── */
+document.getElementById('js-import-btn').addEventListener('click', () => {
+  document.getElementById('import-file').click();
+});
+
+document.getElementById('import-file').addEventListener('change', e => {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    try {
+      const data = JSON.parse(ev.target.result);
+      if (!data.template || !TEMPLATES[data.template]) {
+        showToast('Invalid file — not an Anchor Mode export', 'error');
+        return;
+      }
+      ST.template    = data.template;
+      ST.order       = data.order       || TEMPLATES[data.template].items.map(i=>i.id);
+      ST.done        = data.done        || {};
+      ST.notes       = data.notes       || {};
+      ST.openNotes   = data.openNotes   || {};
+      ST.energy      = data.energy      || 0;
+      ST.customTimes = data.customTimes || {};
+      save();
+      tmplBadge.textContent = TEMPLATES[ST.template].name;
+      paintEnergy();
+      renderList();
+      overlay.classList.add('hidden');
+      showToast('Imported successfully ✓', 'success');
+    } catch {
+      showToast('Could not read file', 'error');
+    }
+  };
+  reader.readAsText(file);
+  e.target.value = '';
+});
+
+/* ── TOAST ── */
+let _toastTimer;
+function showToast(msg, type) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'show' + (type ? ' ' + type : '');
+  clearTimeout(_toastTimer);
+  _toastTimer = setTimeout(() => { t.className = ''; }, 3200);
+}
+
+
 if(saved && saved.template){
   overlay.classList.add('hidden');
   initApp();
@@ -643,5 +806,6 @@ if(saved && saved.template){
   openPicker();
 }
 </script>
+<div id="toast"></div>
 </body>
 </html>
