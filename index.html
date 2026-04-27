@@ -208,8 +208,7 @@ textarea.note:focus{border-color:var(--accent-b)}
   .field-val{min-width:0;padding:7px 12px}
   .schedule{padding:12px 14px 12px}
   .row-main{grid-template-columns:24px 1fr auto;gap:8px;padding:12px 12px 12px 10px}
-  .row-main > .time-label{display:none}
-  .row-main > .tag{display:none}
+  /* times visible at this breakpoint */
   .row-title{font-size:13px}
   .row-sub{font-size:10.5px}
   .notes-btn span{display:none}
@@ -222,6 +221,8 @@ textarea.note:focus{border-color:var(--accent-b)}
 /* Phone portrait (≤420px) */
 @media(max-width:420px){
   body{padding-bottom:env(safe-area-inset-bottom)}
+  .row-main > .time-label{display:none}
+  .row-main > .tag{display:none}
   .picker-box{padding:24px 18px;border-radius:0;min-height:100vh;border:none}
   .picker-title{font-size:26px}
   .sidebar{padding:14px 16px}
@@ -536,7 +537,7 @@ function buildCard(item){
   card.innerHTML=`
     <div class="row-main">
       <div class="handle" title="Drag to reorder"><i></i><i></i><i></i></div>
-      <span class="time time-label${hasCustom?' custom':''}" data-action="time-view" title="Tap to edit time"${hasCustom?'<span class=\'time-dot\'></span>':''}${shownTime}</span>
+      <span class="time time-label${hasCustom?' custom':''}" data-action="time-view" title="Tap to edit time">${hasCustom?'<span class=\'time-dot\'></span>':''}${shownTime}</span>
       <span class="tag tag-${item.type} tag-col">${item.tag}</span>
       <div class="row-body">
         <span class="row-title">${item.title}</span>
