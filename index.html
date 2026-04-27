@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1366, initial-scale=1.0">
+<title>Daily Job Search System — Anchor Mode</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230D0F0E'/%3E%3Ctext x='16' y='22' font-family='Georgia,serif' font-size='14' font-weight='700' fill='%23C8F56A' text-anchor='middle' letter-spacing='-0.5'%3EAM%3C/text%3E%3C/svg%3E">
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'%3E%3Crect width='180' height='180' rx='40' fill='%230D0F0E'/%3E%3Ctext x='90' y='122' font-family='Georgia,serif' font-size='80' font-weight='700' fill='%23C8F56A' text-anchor='middle' letter-spacing='-2'%3EAM%3C/text%3E%3C/svg%3E">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Anchor Mode">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0D0F0E;
+    --surface: #141614;
+    --surface2: #1C1F1C;
+    --surface3: #222622;
+    --border: rgba(255,255,255,0.07);
+    --border-hover: rgba(255,255,255,0.13);
+    --accent: #C8F56A;
+    --accent-dim: rgba(200,245,106,0.12);
+    --text-primary: #F2F2ED;
+    --text-secondary: #8A8F84;
+    --text-muted: #4A4F45;
+    --anchor-color: #F5C842;
+    --primary-color: #6AB8F5;
+    --reset-color: #F5856A;
+    --optional-color: #B06AF5;
+    --tag-anchor-bg: rgba(245,200,66,0.12);
+    --tag-primary-bg: rgba(106,184,245,0.12);
+    --tag-reset-bg: rgba(245,133,106,0.12);
+    --tag-optional-bg: rgba(176,106,245,0.12);
+  }
+
+  html, body {
+    width: 1366px;
+    min-height: 1024px;
+    background: var(--bg);
+    font-family: 'DM Sans', sans-serif;
+    color: var(--text-primary);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .page {
+    width: 1366px;
+    min-height: 1024px;
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .page::before {
+    content: '';
+    position: fixed;
+    top: -200px; left: -100px;
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(200,245,106,0.05) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  /* ── SIDEBAR ── */
+  .sidebar {
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    padding: 44px 32px;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .sidebar::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0; height: 200px;
+    background: linear-gradient(to top, rgba(200,245,106,0.04), transparent);
+    pointer-events: none;
+  }
+
+  .brand {
+    font-family: 'Playfair Display', serif;
+    font-size: 10px; font-weight: 600;
+    letter-spacing: 0.22em; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 10px;
+  }
+
+  .sidebar-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 26px; font-weight: 700; line-height: 1.15;
+    color: var(--text-primary); margin-bottom: 16px;
+  }
+
+  .sidebar-tagline {
+    font-size: 12.5px; color: var(--text-secondary);
+    line-height: 1.65; margin-bottom: 36px;
+  }
+
+  .divider { height: 1px; background: var(--border); margin-bottom: 32px; }
+
+  .outputs-label {
+    font-size: 10px; font-weight: 600;
+    letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--text-muted); margin-bottom: 20px;
+  }
+
+  .output-list { list-style: none; display: flex; flex-direction: column; gap: 16px; flex: 1; }
+  .output-item { display: flex; align-items: flex-start; gap: 12px; }
+  .output-bullet {
+    width: 5px; height: 5px; border-radius: 50%;
+    background: var(--accent); margin-top: 6px;
+    flex-shrink: 0; opacity: 0.6;
+  }
+  .output-text { font-size: 12.5px; color: var(--text-secondary); line-height: 1.5; }
+  .output-text strong {
+    display: block; font-size: 10px; font-weight: 600;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--text-muted); margin-bottom: 2px;
+  }
+
+  /* ── MAIN ── */
+  .main { display: flex; flex-direction: column; overflow: hidden; }
+
+  /* ── TOPBAR ── */
+  .topbar {
+    padding: 28px 44px 24px;
+    display: flex; align-items: center; justify-content: space-between;
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+  }
+
+  .date-energy { display: flex; align-items: center; gap: 24px; }
+
+  .field-group { display: flex; flex-direction: column; gap: 5px; }
+
+  .field-label {
+    font-size: 10px; font-weight: 600;
+    letter-spacing: 0.18em; text-transform: uppercase; color: var(--text-muted);
+  }
+
+  .field-value {
+    display: flex; align-items: center; gap: 10px;
+    font-family: 'DM Mono', monospace; font-size: 13px;
+    color: var(--text-secondary); background: var(--surface2);
+    border: 1px solid var(--border); border-radius: 10px;
+    padding: 9px 16px; min-width: 150px; min-height: 42px;
+  }
+
+  .energy-dots { display: flex; gap: 6px; }
+  .energy-dot {
+    width: 10px; height: 10px; border-radius: 50%;
+    border: 1.5px solid var(--text-muted);
+    cursor: pointer; transition: background 0.2s, border-color 0.2s;
+  }
+  .energy-dot.filled { background: var(--accent); border-color: var(--accent); }
+
+  .topbar-right { display: flex; align-items: center; gap: 14px; }
+
+  .reorder-hint {
+    display: flex; align-items: center; gap: 6px;
+    font-size: 11px; color: var(--text-muted); opacity: 0.8;
+  }
+
+  .system-badge {
+    font-size: 11px; font-weight: 500; letter-spacing: 0.06em;
+    color: var(--accent); background: var(--accent-dim);
+    border: 1px solid rgba(200,245,106,0.2);
+    border-radius: 100px; padding: 7px 16px;
+  }
+
+  /* ── SCHEDULE ── */
+  .schedule {
+    padding: 22px 44px 20px;
+    flex: 1;
+    overflow-y: auto;
+  }
+
+  .schedule::-webkit-scrollbar { width: 4px; }
+  .schedule::-webkit-scrollbar-track { background: transparent; }
+  .schedule::-webkit-scrollbar-thumb { background: var(--text-muted); border-radius: 4px; }
+
+  .schedule-header { margin-bottom: 12px; }
+  .schedule-title {
+    font-size: 10px; font-weight: 600;
+    letter-spacing: 0.18em; text-transform: uppercase; color: var(--text-muted);
+  }
+
+  /* ── SCHEDULE ITEM ── */
+  .schedule-item {
+    border-radius: 14px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    margin-bottom: 8px;
+    position: relative;
+    overflow: hidden;
+    user-select: none;
+    transition: border-color 0.15s, opacity 0.15s;
+  }
+
+  .schedule-item::before {
+    content: '';
+    position: absolute; left: 0; top: 0; bottom: 0; width: 3px;
+  }
+  .schedule-item.anchor-row::before  { background: var(--anchor-color); }
+  .schedule-item.primary-row::before { background: var(--primary-color); }
+  .schedule-item.reset-row::before   { background: var(--reset-color); }
+  .schedule-item.optional-row::before{ background: var(--optional-color); }
+
+  .schedule-item.is-dragging { opacity: 0.35; }
+  .schedule-item.drag-over   { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
+
+  /* ── ROW MAIN ── */
+  .row-main {
+    display: grid;
+    grid-template-columns: 32px 136px 78px 1fr auto auto;
+    align-items: center;
+    gap: 12px;
+    padding: 15px 18px 15px 14px;
+    min-height: 62px;
+  }
+
+  .drag-handle {
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    gap: 3px; cursor: grab; padding: 6px;
+    opacity: 0; transition: opacity 0.15s;
+    border-radius: 6px;
+  }
+  .schedule-item:hover .drag-handle { opacity: 1; }
+  .drag-handle:hover { background: var(--surface2); }
+  .drag-handle:active { cursor: grabbing; }
+  .drag-handle span {
+    display: block; width: 14px; height: 1.5px;
+    background: var(--text-muted); border-radius: 2px;
+  }
+
+  .time-block {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px; color: var(--text-muted); white-space: nowrap;
+  }
+
+  .tag {
+    font-size: 9.5px; font-weight: 600; letter-spacing: 0.1em;
+    text-transform: uppercase; border-radius: 6px;
+    padding: 4px 8px; text-align: center; white-space: nowrap;
+  }
+  .tag-anchor   { color: var(--anchor-color);   background: var(--tag-anchor-bg); }
+  .tag-primary  { color: var(--primary-color);  background: var(--tag-primary-bg); }
+  .tag-reset    { color: var(--reset-color);     background: var(--tag-reset-bg); }
+  .tag-optional { color: var(--optional-color);  background: var(--tag-optional-bg); }
+
+  .row-content { display: flex; flex-direction: column; gap: 3px; }
+  .row-title {
+    font-size: 14px; font-weight: 600; color: var(--text-primary); line-height: 1.2;
+    transition: opacity 0.2s;
+  }
+  .row-subtitle { font-size: 11.5px; color: var(--text-secondary); }
+
+  .schedule-item.done .row-title {
+    opacity: 0.4;
+    text-decoration: line-through;
+    text-decoration-color: var(--text-muted);
+  }
+
+  /* Notes toggle button */
+  .notes-btn {
+    display: flex; align-items: center; gap: 5px;
+    font-size: 11px; font-family: 'DM Sans', sans-serif;
+    color: var(--text-muted);
+    background: none; border: 1px solid var(--border);
+    border-radius: 7px; padding: 5px 10px; cursor: pointer;
+    transition: color 0.15s, border-color 0.15s, background 0.15s;
+    white-space: nowrap; flex-shrink: 0;
+  }
+  .notes-btn:hover { color: var(--text-secondary); border-color: var(--border-hover); background: var(--surface2); }
+  .notes-btn.has-notes {
+    color: var(--accent);
+    border-color: rgba(200,245,106,0.3);
+    background: var(--accent-dim);
+  }
+
+  /* Check circle */
+  .check-circle {
+    width: 26px; height: 26px; border-radius: 50%;
+    border: 1.5px solid var(--text-muted);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; cursor: pointer; transition: all 0.18s;
+  }
+  .check-circle:hover { border-color: var(--accent); }
+  .check-inner {
+    width: 9px; height: 9px; border-radius: 50%;
+    background: transparent; transition: background 0.18s;
+  }
+  .schedule-item.done .check-circle { border-color: var(--accent); background: var(--accent-dim); }
+  .schedule-item.done .check-inner  { background: var(--accent); }
+
+  /* ── NOTES AREA ── */
+  .notes-area {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.22s ease;
+  }
+  .notes-area.open { max-height: 200px; }
+
+  .notes-inner {
+    padding: 0 18px 14px 62px;
+  }
+
+  .notes-divider { height: 1px; background: var(--border); margin-bottom: 10px; }
+
+  .notes-textarea {
+    width: 100%;
+    background: var(--surface3);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    color: var(--text-primary);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px; line-height: 1.6;
+    padding: 10px 13px;
+    resize: vertical; min-height: 58px;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  .notes-textarea::placeholder { color: var(--text-muted); }
+  .notes-textarea:focus { border-color: rgba(200,245,106,0.3); }
+
+  /* ── FOOTER ── */
+  .footer {
+    padding: 14px 44px;
+    border-top: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+    flex-shrink: 0;
+  }
+
+  .page-indicator { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--text-muted); }
+  .progress-row { display: flex; align-items: center; gap: 12px; }
+  .progress-label { font-size: 12px; color: var(--text-secondary); }
+  .progress-bar { width: 120px; height: 3px; background: var(--surface2); border-radius: 4px; overflow: hidden; }
+  .progress-fill { width: 0%; height: 100%; background: var(--accent); border-radius: 4px; transition: width 0.35s ease; }
+  .progress-count { font-family: 'DM Mono', monospace; font-size: 12px; color: var(--accent); }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="brand">Anchor Mode</div>
+    <h1 class="sidebar-title">Daily Job<br>Search<br>System</h1>
+    <p class="sidebar-tagline">A structured schedule for consistent results — built around the gym as the anchor habit.</p>
+    <div class="divider"></div>
+    <p class="outputs-label">Today's Outputs</p>
+    <ul class="output-list">
+      <li class="output-item"><div class="output-bullet"></div><div class="output-text"><strong>Morning Setup</strong>Clear head and a written intention for the day</div></li>
+      <li class="output-item"><div class="output-bullet"></div><div class="output-text"><strong>Gym</strong>Physical reset before deep work begins</div></li>
+      <li class="output-item"><div class="output-bullet"></div><div class="output-text"><strong>Deep Work Block</strong>2–3 tailored applications submitted</div></li>
+      <li class="output-item"><div class="output-bullet"></div><div class="output-text"><strong>Break</strong>Real food, no screens — actual rest</div></li>
+      <li class="output-item"><div class="output-bullet"></div><div class="output-text"><strong>Secondary Work</strong>Tracker reflects today's reality</div></li>
+      <li class="output-item"><div class="output-bullet"></div><div class="output-text"><strong>Follow-Up</strong>Every open thread has a next step</div></li>
+      <li class="output-item"><div class="output-bullet"></div><div class="output-text"><strong>Light Optimization</strong>Tomorrow starts already loaded</div></li>
+    </ul>
+  </aside>
+
+  <!-- MAIN -->
+  <div class="main">
+
+    <!-- TOPBAR -->
+    <div class="topbar">
+      <div class="date-energy">
+        <div class="field-group">
+          <span class="field-label">Date</span>
+          <div class="field-value" id="date-display"></div>
+        </div>
+        <div class="field-group">
+          <span class="field-label">Energy</span>
+          <div class="field-value">
+            <div class="energy-dots">
+              <div class="energy-dot" onclick="setEnergy(1)"></div>
+              <div class="energy-dot" onclick="setEnergy(2)"></div>
+              <div class="energy-dot" onclick="setEnergy(3)"></div>
+              <div class="energy-dot" onclick="setEnergy(4)"></div>
+              <div class="energy-dot" onclick="setEnergy(5)"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="topbar-right">
+        <div class="reorder-hint">
+          <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
+            <path d="M1.5 3.5h10M1.5 6.5h10M1.5 9.5h10" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+          </svg>
+          Drag to reorder
+        </div>
+        <div class="system-badge">A Daily Operating System</div>
+      </div>
+    </div>
+
+    <!-- SCHEDULE -->
+    <div class="schedule">
+      <div class="schedule-header">
+        <span class="schedule-title">Schedule</span>
+      </div>
+      <div id="schedule-list"></div>
+    </div>
+
+    <!-- FOOTER -->
+    <div class="footer">
+      <span class="page-indicator">DAILY JOB SEARCH SYSTEM — Page 1 of 2</span>
+      <div class="progress-row">
+        <span class="progress-label">Today's progress</span>
+        <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+        <span class="progress-count" id="progress-count">0 / 7</span>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  // ── Data ──
+  const ITEMS = [
+    { id: 'morning',   time: '7:30 – 8:30 AM',     type: 'anchor',   tag: 'Anchor',   title: 'Morning Setup',      sub: 'Wake up, breakfast, light planning' },
+    { id: 'gym',       time: '8:30 – 9:45 AM',     type: 'anchor',   tag: 'Anchor',   title: 'Gym',                sub: 'Strength or cardio session' },
+    { id: 'deepwork',  time: '10:30 AM – 1:00 PM', type: 'primary',  tag: 'Primary',  title: 'Deep Work Block',    sub: 'Apply to 2–3 high-quality roles · Tailor resume to each posting' },
+    { id: 'break',     time: '1:00 – 2:00 PM',     type: 'reset',    tag: 'Reset',    title: 'Break',              sub: 'Lunch and reset' },
+    { id: 'secondary', time: '2:00 – 4:00 PM',     type: 'primary',  tag: 'Primary',  title: 'Secondary Work',     sub: 'Apply to 1–2 more roles · Update tracker' },
+    { id: 'followup',  time: '4:00 – 5:00 PM',     type: 'primary',  tag: 'Primary',  title: 'Follow-Up',          sub: 'Send follow-ups · Check portals' },
+    { id: 'optimize',  time: '7:00 – 8:00 PM',     type: 'optional', tag: 'Optional', title: 'Light Optimization', sub: "Optional resume improvement · Plan tomorrow's three priorities" },
+  ];
+
+  const state = {
+    order: ITEMS.map(i => i.id),
+    done: {},
+    notes: {},
+    openNotes: {},
+  };
+
+  // ── Render ──
+  function render() {
+    const list = document.getElementById('schedule-list');
+
+    // Preserve textarea values before clearing
+    list.querySelectorAll('.notes-textarea').forEach(ta => {
+      state.notes[ta.dataset.id] = ta.value;
+    });
+
+    list.innerHTML = '';
+    state.order.forEach(id => {
+      const item = ITEMS.find(i => i.id === id);
+      if (item) list.appendChild(buildCard(item));
+    });
+
+    attachDrag();
+    updateProgress();
+  }
+
+  function notesBtnHTML(hasNotes) {
+    return `<svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M1 2.5h10M1 5.5h7M1 8.5h5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>${hasNotes ? ' Notes' : ' Add note'}`;
+  }
+
+  function buildCard(item) {
+    const card = document.createElement('div');
+    const isDone = !!state.done[item.id];
+    const isOpen = !!state.openNotes[item.id];
+    const noteVal = state.notes[item.id] || '';
+    const hasNotes = noteVal.trim().length > 0;
+
+    card.className = `schedule-item ${item.type}-row${isDone ? ' done' : ''}`;
+    card.dataset.id = item.id;
+
+    card.innerHTML = `
+      <div class="row-main">
+        <div class="drag-handle" title="Drag to reorder">
+          <span></span><span></span><span></span>
+        </div>
+        <span class="time-block">${item.time}</span>
+        <span class="tag tag-${item.type}">${item.tag}</span>
+        <div class="row-content">
+          <span class="row-title">${item.title}</span>
+          <span class="row-subtitle">${item.sub}</span>
+        </div>
+        <button class="notes-btn${hasNotes ? ' has-notes' : ''}" data-id="${item.id}">${notesBtnHTML(hasNotes)}</button>
+        <div class="check-circle" data-id="${item.id}"><div class="check-inner"></div></div>
+      </div>
+      <div class="notes-area${isOpen ? ' open' : ''}" data-notes-area="${item.id}">
+        <div class="notes-inner">
+          <div class="notes-divider"></div>
+          <textarea class="notes-textarea" data-id="${item.id}" placeholder="Add notes for ${item.title}…">${noteVal}</textarea>
+        </div>
+      </div>
+    `;
+
+    // Check toggle
+    card.querySelector('.check-circle').addEventListener('click', e => {
+      e.stopPropagation();
+      state.done[item.id] = !state.done[item.id];
+      card.classList.toggle('done', state.done[item.id]);
+      updateProgress();
+    });
+
+    // Notes toggle
+    const notesBtn = card.querySelector('.notes-btn');
+    const notesArea = card.querySelector('.notes-area');
+    notesBtn.addEventListener('click', e => {
+      e.stopPropagation();
+      state.openNotes[item.id] = !state.openNotes[item.id];
+      notesArea.classList.toggle('open', state.openNotes[item.id]);
+      if (state.openNotes[item.id]) {
+        setTimeout(() => card.querySelector('.notes-textarea').focus(), 50);
+      }
+    });
+
+    // Textarea interactions
+    const ta = card.querySelector('.notes-textarea');
+    ta.addEventListener('click', e => e.stopPropagation());
+    ta.addEventListener('input', e => {
+      state.notes[item.id] = e.target.value;
+      const hasN = e.target.value.trim().length > 0;
+      notesBtn.classList.toggle('has-notes', hasN);
+      notesBtn.innerHTML = notesBtnHTML(hasN);
+    });
+
+    return card;
+  }
+
+  // ── Drag & Drop ──
+  let dragSrcId = null;
+  let dragEl = null;
+
+  function attachDrag() {
+    document.querySelectorAll('.schedule-item').forEach(card => {
+      const handle = card.querySelector('.drag-handle');
+
+      // Only start drag from handle
+      handle.addEventListener('mousedown', () => { card.setAttribute('draggable', 'true'); });
+      handle.addEventListener('touchstart', () => { card.setAttribute('draggable', 'true'); }, { passive: true });
+
+      card.addEventListener('dragstart', e => {
+        dragSrcId = card.dataset.id;
+        dragEl = card;
+        setTimeout(() => card.classList.add('is-dragging'), 0);
+        e.dataTransfer.effectAllowed = 'move';
+        e.dataTransfer.setData('text/plain', card.dataset.id);
+      });
+
+      card.addEventListener('dragend', () => {
+        card.classList.remove('is-dragging');
+        card.setAttribute('draggable', 'false');
+        document.querySelectorAll('.schedule-item').forEach(c => c.classList.remove('drag-over'));
+        dragSrcId = null;
+        dragEl = null;
+      });
+
+      card.addEventListener('dragover', e => {
+        e.preventDefault();
+        if (card.dataset.id !== dragSrcId) {
+          document.querySelectorAll('.schedule-item').forEach(c => c.classList.remove('drag-over'));
+          card.classList.add('drag-over');
+        }
+      });
+
+      card.addEventListener('dragleave', e => {
+        if (!card.contains(e.relatedTarget)) card.classList.remove('drag-over');
+      });
+
+      card.addEventListener('drop', e => {
+        e.preventDefault();
+        const targetId = card.dataset.id;
+        if (dragSrcId && targetId && dragSrcId !== targetId) {
+          const from = state.order.indexOf(dragSrcId);
+          const to   = state.order.indexOf(targetId);
+          state.order.splice(from, 1);
+          state.order.splice(to, 0, dragSrcId);
+          render();
+        }
+      });
+    });
+  }
+
+  // ── Progress ──
+  function updateProgress() {
+    const total = state.order.length;
+    const done  = state.order.filter(id => state.done[id]).length;
+    document.getElementById('progress-fill').style.width = (done / total * 100) + '%';
+    document.getElementById('progress-count').textContent = done + ' / ' + total;
+  }
+
+  // ── Date ──
+  document.getElementById('date-display').textContent =
+    new Date().toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+
+  // ── Energy ──
+  function setEnergy(n) {
+    document.querySelectorAll('.energy-dot').forEach((dot, i) => {
+      dot.classList.toggle('filled', i < n);
+    });
+  }
+
+  // ── Init ──
+  render();
+</script>
+</body>
+</html>
