@@ -3,6 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="description" content="Anchor Mode — a daily job search system built around the gym as your anchor habit. Structure your day for consistent, compounding results.">
+<meta property="og:title" content="Anchor Mode — Daily Job Search System">
+<meta property="og:description" content="A structured daily schedule for job seekers, built around the gym as the anchor habit.">
+<meta property="og:type" content="website">
 <title>Anchor Mode — Daily Job Search System</title>
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230D0F0E'/%3E%3Ctext x='16' y='22' font-family='Georgia,serif' font-size='14' font-weight='700' fill='%23C8F56A' text-anchor='middle' letter-spacing='-0.5'%3EAM%3C/text%3E%3C/svg%3E">
 <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'%3E%3Crect width='180' height='180' rx='40' fill='%230D0F0E'/%3E%3Ctext x='90' y='122' font-family='Georgia,serif' font-size='80' font-weight='700' fill='%23C8F56A' text-anchor='middle' letter-spacing='-2'%3EAM%3C/text%3E%3C/svg%3E">
@@ -10,6 +14,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Anchor Mode">
 <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -53,6 +58,7 @@ html,body{width:100%;min-height:100vh;background:var(--bg);font-family:'DM Sans'
 .picker-card.t-highperf::before{background:linear-gradient(90deg,var(--c-primary),var(--c-build))}
 .picker-card:hover{border-color:var(--border-hi);background:var(--surf3)}
 .picker-card.selected{border-color:var(--accent);background:var(--accent-d)}
+.picker-card:focus{outline:2px solid var(--accent);outline-offset:2px}
 .picker-card-name{font-size:15px;font-weight:600;color:var(--t1);margin-bottom:5px}
 .picker-card-sub{font-size:12px;color:var(--t2);line-height:1.5;margin-bottom:14px}
 .picker-card-blocks{display:flex;flex-direction:column;gap:4px}
@@ -67,6 +73,13 @@ html,body{width:100%;min-height:100vh;background:var(--bg);font-family:'DM Sans'
 }
 .picker-go:hover{opacity:.88}
 .picker-go:disabled{opacity:.35;cursor:not-allowed}
+
+/* wake time row */
+.picker-wake-row{display:flex;align-items:center;gap:10px;margin-bottom:16px;font-size:12px;color:var(--t2)}
+.picker-wake-row label{font-size:10px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--t3);white-space:nowrap}
+.picker-wake-input{font-family:'DM Mono',monospace;font-size:12px;background:var(--surf2);border:1px solid var(--border);border-radius:8px;color:var(--t1);padding:6px 10px;outline:none;width:110px}
+.picker-wake-input:focus{border-color:var(--accent-b)}
+.picker-wake-note{font-size:10px;color:var(--t3)}
 
 /* ── MAIN LAYOUT ── */
 .page{width:100%;min-height:100vh;display:grid;grid-template-columns:280px 1fr}
@@ -94,6 +107,7 @@ html,body{width:100%;min-height:100vh;background:var(--bg);font-family:'DM Sans'
 .field-val{display:flex;align-items:center;gap:8px;font-family:'DM Mono',monospace;font-size:12.5px;color:var(--t2);background:var(--surf2);border:1px solid var(--border);border-radius:10px;padding:8px 15px;min-width:148px;min-height:40px}
 .energy-dots{display:flex;gap:6px}
 .e-dot{width:10px;height:10px;border-radius:50%;border:1.5px solid var(--t3);cursor:pointer;transition:background .18s,border-color .18s;padding:7px;margin:-7px}
+.e-dot:focus{outline:2px solid var(--accent);outline-offset:3px;border-radius:50%}
 .e-dot.on{background:var(--accent);border-color:var(--accent)}
 .topbar-right{display:flex;align-items:center;gap:12px}
 .drag-hint{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--t3)}
@@ -131,7 +145,7 @@ html,body{width:100%;min-height:100vh;background:var(--bg);font-family:'DM Sans'
 .time-save{font-size:10px;font-family:'DM Sans',sans-serif;font-weight:500;background:var(--accent);color:#0D0F0E;border:none;border-radius:5px;padding:3px 8px;cursor:pointer;flex-shrink:0}
 .time-cancel{font-size:12px;color:var(--t3);background:none;border:none;cursor:pointer;padding:0 2px;line-height:1;flex-shrink:0}
 .time-cancel:hover{color:var(--t2)}
-.tag{font-size:9px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;border-radius:5px;padding:4px 8px;text-align:center;white-space:nowrap}
+.tag{font-size:9px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;border-radius:5px;padding:4px 8px;text-align:center;white-space:nowrap;cursor:help}
 .tag-anchor{color:var(--c-anchor);background:var(--bg-anchor)}
 .tag-primary{color:var(--c-primary);background:var(--bg-primary)}
 .tag-reset{color:var(--c-reset);background:var(--bg-reset)}
@@ -145,6 +159,7 @@ html,body{width:100%;min-height:100vh;background:var(--bg);font-family:'DM Sans'
 .notes-btn.live{color:var(--accent);border-color:var(--accent-b);background:var(--accent-d)}
 .check-ring{width:25px;height:25px;border-radius:50%;border:1.5px solid var(--t3);display:flex;align-items:center;justify-content:center;flex-shrink:0;cursor:pointer;transition:border-color .16s,background .16s}
 .check-ring:hover{border-color:var(--accent)}
+.check-ring:focus{outline:2px solid var(--accent);outline-offset:2px}
 .check-dot{width:9px;height:9px;border-radius:50%;background:transparent;transition:background .16s}
 .notes-area{max-height:0;overflow:hidden;transition:max-height .2s cubic-bezier(.4,0,.2,1)}
 .notes-area.open{max-height:160px}
@@ -182,8 +197,6 @@ textarea.note:focus{border-color:var(--accent-b)}
 .change-tmpl-btn:hover{color:var(--t2);border-color:var(--border-hi)}
 
 /* ── RESPONSIVE BREAKPOINTS ── */
-
-/* Tablet portrait / small tablet (≤900px) */
 @media(max-width:900px){
   .page{grid-template-columns:1fr;grid-template-rows:auto 1fr}
   .sidebar{
@@ -200,8 +213,6 @@ textarea.note:focus{border-color:var(--accent-b)}
   .sidebar-header{display:flex;flex-direction:column}
   .main{min-height:0}
 }
-
-/* Phone landscape / mid mobile (≤680px) */
 @media(max-width:680px){
   .picker-cards{grid-template-columns:1fr 1fr 1fr}
   .topbar{padding:12px 16px 10px}
@@ -209,7 +220,6 @@ textarea.note:focus{border-color:var(--accent-b)}
   .field-val{min-width:0;padding:7px 12px}
   .schedule{padding:12px 14px 12px}
   .row-main{grid-template-columns:24px 1fr auto;gap:8px;padding:12px 12px 12px 10px}
-  /* times visible at this breakpoint */
   .row-title{font-size:13px}
   .row-sub{font-size:10.5px}
   .notes-btn span{display:none}
@@ -218,8 +228,10 @@ textarea.note:focus{border-color:var(--accent-b)}
   .prog-bar{flex:1}
   .card::before{width:2px}
 }
-
-/* Phone portrait (≤420px) */
+/* 2-column picker cards on mid phones */
+@media(max-width:560px) and (min-width:421px){
+  .picker-cards{grid-template-columns:1fr 1fr}
+}
 @media(max-width:420px){
   body{padding-bottom:env(safe-area-inset-bottom)}
   .row-main > .time-label{display:none}
@@ -238,7 +250,6 @@ textarea.note:focus{border-color:var(--accent-b)}
 }
 
 /* ── ADHD FEATURES ── */
-/* Pomodoro */
 .pomo-bar-wrap{height:3px;background:var(--surf2);border-radius:3px;overflow:hidden;margin:0 14px 10px 57px}
 .pomo-bar{height:100%;background:var(--accent);border-radius:3px;transition:width .5s linear;width:100%}
 .pomo-bar.warn{background:var(--c-reset)}
@@ -250,7 +261,6 @@ textarea.note:focus{border-color:var(--accent-b)}
 .pomo-mode{display:flex;gap:4px;margin-left:auto}
 .pomo-mode button{font-size:9px;font-family:'DM Sans',sans-serif;color:var(--t3);background:none;border:1px solid var(--border);border-radius:4px;padding:2px 6px;cursor:pointer}
 .pomo-mode button.sel{color:var(--accent);border-color:var(--accent-b)}
-/* Starter action */
 .starter-wrap{padding:0 14px 10px 57px;display:none}
 .starter-wrap.visible{display:block}
 .starter-box{background:var(--surf2);border:1px solid var(--border);border-radius:8px;padding:8px 12px;display:flex;align-items:center;gap:10px}
@@ -259,10 +269,8 @@ textarea.note:focus{border-color:var(--accent-b)}
 .starter-text span{color:var(--accent);font-weight:500}
 .focusmate-link{font-size:10px;color:var(--c-primary);border:1px solid rgba(106,184,245,0.25);border-radius:5px;padding:2px 7px;text-decoration:none;white-space:nowrap;flex-shrink:0;display:inline-flex;align-items:center;gap:3px}
 .focusmate-link:hover{background:rgba(106,184,245,0.08)}
-/* Celebration flash */
 @keyframes celebrate{0%{opacity:0;transform:scale(.8)}50%{opacity:1;transform:scale(1.1)}100%{opacity:0;transform:scale(1)}}
 .celebrate-pop{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);font-size:28px;pointer-events:none;z-index:300;animation:celebrate .8s ease forwards}
-/* Stats bar */
 #adhd-stats{display:flex;align-items:center;gap:12px;padding:10px 42px;border-bottom:1px solid var(--border);flex-shrink:0;flex-wrap:wrap}
 .stat-chip{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--t2);background:var(--surf2);border:1px solid var(--border);border-radius:8px;padding:5px 10px;cursor:default}
 .stat-chip svg{opacity:.6}
@@ -270,9 +278,11 @@ textarea.note:focus{border-color:var(--accent-b)}
 .stat-chip.streak .stat-val{color:var(--c-anchor)}
 .stat-chip.apps .stat-val{color:var(--c-primary)}
 .stat-chip.wins .stat-val{color:var(--accent)}
-/* Win log */
 #win-panel{position:fixed;right:0;top:0;bottom:0;width:280px;background:var(--surf);border-left:1px solid var(--border);z-index:50;display:flex;flex-direction:column;transform:translateX(100%);transition:transform .22s cubic-bezier(.4,0,.2,1)}
 #win-panel.open{transform:translateX(0)}
+/* Win panel backdrop */
+#win-backdrop{position:fixed;inset:0;background:rgba(0,0,0,0.38);z-index:49;display:none;cursor:pointer}
+#win-backdrop.open{display:block}
 .win-panel-head{padding:20px 18px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
 .win-panel-title{font-size:13px;font-weight:500;color:var(--t1)}
 .win-close{background:none;border:none;color:var(--t3);cursor:pointer;font-size:18px;line-height:1;padding:0}
@@ -288,7 +298,6 @@ textarea.note:focus{border-color:var(--accent-b)}
 .win-input:focus{border-color:var(--accent-b)}
 .win-add-btn{background:var(--accent);color:#0D0F0E;border:none;border-radius:8px;padding:7px 12px;font-size:12px;font-weight:500;cursor:pointer;white-space:nowrap}
 @media(max-width:680px){#adhd-stats{padding:8px 14px}#win-panel{width:100%}}
-
 .stat-chip button{min-width:18px;min-height:18px;display:inline-flex;align-items:center;justify-content:center}
 .win-item button{opacity:0;transition:opacity .14s}
 .win-item:hover button{opacity:1}
@@ -297,15 +306,23 @@ textarea.note:focus{border-color:var(--accent-b)}
 <body>
 
 <!-- PICKER OVERLAY -->
-<div id="picker-overlay">
+<div id="picker-overlay" aria-modal="true" role="dialog" aria-label="Choose today's schedule">
   <div class="picker-box">
     <div class="picker-brand">Anchor Mode</div>
-    <h1 class="picker-title">Good morning.</h1>
+    <h2 class="picker-title" id="picker-greeting">Good morning.</h2>
     <div class="picker-date" id="picker-date"></div>
-    <p class="picker-label">Choose today's schedule</p>
-    <div class="picker-cards">
 
-      <div class="picker-card t-standard" data-tmpl="standard" onclick="selectTemplate('standard')">
+    <!-- Wake time row: auto-filled from clock, editable as override -->
+    <div class="picker-wake-row">
+      <label for="picker-wake">Wake time</label>
+      <input type="time" id="picker-wake" class="picker-wake-input" aria-label="Wake time — schedule blocks shift to match">
+      <span class="picker-wake-note">Schedule adjusts automatically</span>
+    </div>
+
+    <p class="picker-label">Choose today's schedule</p>
+    <div class="picker-cards" role="radiogroup" aria-label="Schedule templates">
+
+      <div class="picker-card t-standard" data-tmpl="standard" role="radio" aria-checked="false" tabindex="0" onclick="selectTemplate('standard')">
         <div class="picker-card-name">Standard day</div>
         <div class="picker-card-sub">Consistent energy · most days · built around the gym as anchor</div>
         <div class="picker-card-blocks">
@@ -319,7 +336,7 @@ textarea.note:focus{border-color:var(--accent-b)}
         </div>
       </div>
 
-      <div class="picker-card t-minimal" data-tmpl="minimal" onclick="selectTemplate('minimal')">
+      <div class="picker-card t-minimal" data-tmpl="minimal" role="radio" aria-checked="false" tabindex="0" onclick="selectTemplate('minimal')">
         <div class="picker-card-name">Minimal day</div>
         <div class="picker-card-sub">Low energy · rough week · just stay in motion</div>
         <div class="picker-card-blocks">
@@ -333,7 +350,7 @@ textarea.note:focus{border-color:var(--accent-b)}
         </div>
       </div>
 
-      <div class="picker-card t-highperf" data-tmpl="highperf" onclick="selectTemplate('highperf')">
+      <div class="picker-card t-highperf" data-tmpl="highperf" role="radio" aria-checked="false" tabindex="0" onclick="selectTemplate('highperf')">
         <div class="picker-card-name">High-performance day</div>
         <div class="picker-card-sub">Peak energy · strong momentum · fully optimized</div>
         <div class="picker-card-blocks">
@@ -354,22 +371,14 @@ textarea.note:focus{border-color:var(--accent-b)}
 </div>
 
 <!-- MAIN APP -->
-<div class="page">
+<div class="page" id="main-page">
   <aside class="sidebar">
     <div class="sidebar-header"><div class="brand">Anchor Mode</div>
     <h1 class="sidebar-title">Daily Job Search System</h1></div>
     <p class="sidebar-sub">A structured schedule for consistent results — built around the gym as the anchor habit.</p>
     <div class="divider"></div>
     <p class="out-label">Today's outputs</p>
-    <ul class="out-list">
-      <li class="out-item"><div class="out-dot"></div><div class="out-text"><b>Morning Setup</b>Clear head and written intention</div></li>
-      <li class="out-item"><div class="out-dot"></div><div class="out-text"><b>Gym</b>Physical reset before deep work</div></li>
-      <li class="out-item"><div class="out-dot"></div><div class="out-text"><b>Deep Work</b>2 tailored applications submitted</div></li>
-      <li class="out-item"><div class="out-dot"></div><div class="out-text"><b>Break</b>Real food, no screens — actual rest</div></li>
-      <li class="out-item"><div class="out-dot"></div><div class="out-text"><b>Networking</b>Every open thread has a next step</div></li>
-      <li class="out-item"><div class="out-dot"></div><div class="out-text"><b>Skill Block</b>Something that compounds over time</div></li>
-      <li class="out-item"><div class="out-dot"></div><div class="out-text"><b>Shutdown</b>Tomorrow starts already loaded</div></li>
-    </ul>
+    <ul class="out-list" id="sidebar-out-list" aria-label="Today's planned outputs"></ul>
     <div class="template-badge">
       <span class="tmpl-label">Today's template</span>
       <span class="tmpl-pill" id="sidebar-tmpl-name">—</span>
@@ -380,25 +389,25 @@ textarea.note:focus{border-color:var(--accent-b)}
     <div class="topbar">
       <div class="topbar-left">
         <div class="field">
-          <span class="field-lbl">Date</span>
-          <div class="field-val" id="js-date"></div>
+          <span class="field-lbl" id="date-lbl">Date</span>
+          <div class="field-val" id="js-date" aria-labelledby="date-lbl"></div>
         </div>
         <div class="field">
-          <span class="field-lbl">Energy</span>
+          <span class="field-lbl" id="energy-lbl">Energy</span>
           <div class="field-val">
-            <div class="energy-dots" id="js-energy">
-              <div class="e-dot" data-e="1"></div>
-              <div class="e-dot" data-e="2"></div>
-              <div class="e-dot" data-e="3"></div>
-              <div class="e-dot" data-e="4"></div>
-              <div class="e-dot" data-e="5"></div>
+            <div class="energy-dots" id="js-energy" role="radiogroup" aria-labelledby="energy-lbl">
+              <div class="e-dot" data-e="1" role="radio" aria-label="Low" aria-checked="false" tabindex="0"></div>
+              <div class="e-dot" data-e="2" role="radio" aria-label="Medium-low" aria-checked="false" tabindex="-1"></div>
+              <div class="e-dot" data-e="3" role="radio" aria-label="Medium" aria-checked="false" tabindex="-1"></div>
+              <div class="e-dot" data-e="4" role="radio" aria-label="Medium-high" aria-checked="false" tabindex="-1"></div>
+              <div class="e-dot" data-e="5" role="radio" aria-label="High" aria-checked="false" tabindex="-1"></div>
             </div>
           </div>
         </div>
       </div>
       <div class="topbar-right">
         <div class="drag-hint">
-          <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M1 2.5h10M1 5.5h10M1 8.5h10" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M1 2.5h10M1 5.5h10M1 8.5h10" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
           Drag to reorder
         </div>
         <div class="badge">A Daily Operating System</div>
@@ -406,53 +415,55 @@ textarea.note:focus{border-color:var(--accent-b)}
     </div>
     <div id="adhd-stats">
       <div class="stat-chip streak" title="Days in a row you completed your schedule">
-        <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M6.5 1.5c0 2-3 3.5-3 5.5a3 3 0 006 0c0-2-3-3.5-3-5.5z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/></svg>
+        <svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true"><path d="M6.5 1.5c0 2-3 3.5-3 5.5a3 3 0 006 0c0-2-3-3.5-3-5.5z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/></svg>
         Streak <span class="stat-val" id="stat-streak">0</span> days
       </div>
-      <div class="stat-chip apps" id="apps-chip" title="Applications from InFlow this week — tap +/- to adjust manually">
-        <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><rect x="2" y="2" width="9" height="9" rx="1.5" stroke="currentColor" stroke-width="1.2"/><path d="M4.5 6.5h4M4.5 4.5h4M4.5 8.5h2" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+      <div class="stat-chip apps" id="apps-chip" title="Applications submitted this week — tap +/- to adjust">
+        <svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true"><rect x="2" y="2" width="9" height="9" rx="1.5" stroke="currentColor" stroke-width="1.2"/><path d="M4.5 6.5h4M4.5 4.5h4M4.5 8.5h2" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
         <span id="apps-chip-label">Apps this week</span>
-        <button onclick="adjustApps(-1)" style="background:none;border:none;color:var(--t3);cursor:pointer;font-size:14px;line-height:1;padding:0 1px" title="Remove one">−</button>
+        <button onclick="adjustApps(-1)" style="background:none;border:none;color:var(--t3);cursor:pointer;font-size:14px;line-height:1;padding:0 1px" aria-label="Remove one application">−</button>
         <span class="stat-val" id="stat-apps">0</span>
-        <button onclick="adjustApps(1)" style="background:none;border:none;color:var(--accent);cursor:pointer;font-size:14px;line-height:1;padding:0 1px" title="Add one">+</button>
+        <button onclick="adjustApps(1)" style="background:none;border:none;color:var(--accent);cursor:pointer;font-size:14px;line-height:1;padding:0 1px" aria-label="Add one application">+</button>
         <span id="inflow-badge" style="display:none;font-size:9px;color:var(--c-primary);border:1px solid rgba(106,184,245,0.3);border-radius:4px;padding:1px 5px;margin-left:2px">InFlow</span>
       </div>
-      <div class="stat-chip wins" title="Today's wins" id="stat-wins-chip" style="cursor:pointer" onclick="toggleWinPanel()">
-        <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M6.5 2l1.2 2.4 2.6.4-1.9 1.8.5 2.6-2.4-1.3-2.4 1.3.5-2.6-1.9-1.8 2.6-.4z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/></svg>
+      <div class="stat-chip wins" title="Today's wins — click to open" id="stat-wins-chip" style="cursor:pointer" onclick="toggleWinPanel()" aria-haspopup="true">
+        <svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true"><path d="M6.5 2l1.2 2.4 2.6.4-1.9 1.8.5 2.6-2.4-1.3-2.4 1.3.5-2.6-1.9-1.8 2.6-.4z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/></svg>
         Wins <span class="stat-val" id="stat-wins">0</span>
-        <span style="font-size:9px;color:var(--t3);margin-left:2px">↗</span>
+        <span style="font-size:9px;color:var(--t3);margin-left:2px" aria-hidden="true">↗</span>
       </div>
       <div style="margin-left:auto;display:flex;align-items:center;gap:8px">
         <span style="font-size:10px;color:var(--t3)">Pomodoro</span>
-        <div style="display:flex;gap:3px" id="pomo-global-mode">
-          <button onclick="setGlobalPomo(25,5)" id="pg-25" class="pomo-btn" style="font-size:9px;padding:2px 7px">25/5</button>
-          <button onclick="setGlobalPomo(50,10)" id="pg-50" class="pomo-btn" style="font-size:9px;padding:2px 7px">50/10</button>
+        <div style="display:flex;gap:3px" id="pomo-global-mode" role="group" aria-label="Pomodoro mode">
+          <button onclick="setGlobalPomo(25,5)" id="pg-25" class="pomo-btn" style="font-size:9px;padding:2px 7px" aria-pressed="true">25/5</button>
+          <button onclick="setGlobalPomo(50,10)" id="pg-50" class="pomo-btn" style="font-size:9px;padding:2px 7px" aria-pressed="false">50/10</button>
         </div>
       </div>
     </div>
     <div class="schedule">
       <div class="sch-label">Schedule</div>
-      <div id="js-list"></div>
+      <div id="js-list" role="list"></div>
     </div>
     <div class="footer">
-      <div style="display:flex;align-items:center;gap:14px">
+      <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
         <span class="pg">ANCHOR MODE — Daily Job Search System</span>
         <button class="reset-btn" id="js-reset">Reset day</button>
         <button class="change-tmpl-btn" id="js-change-tmpl">Change template</button>
         <button class="export-btn" id="js-export">
-          <svg width="11" height="11" viewBox="0 0 11 11" fill="none"><path d="M5.5 1v6M2.5 5l3 3 3-3M1 9h9" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <svg width="11" height="11" viewBox="0 0 11 11" fill="none" aria-hidden="true"><path d="M5.5 1v6M2.5 5l3 3 3-3M1 9h9" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
           Export
         </button>
         <button class="import-btn" id="js-import-btn">
-          <svg width="11" height="11" viewBox="0 0 11 11" fill="none"><path d="M5.5 10V4M2.5 6l3-3 3 3M1 1h9" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <svg width="11" height="11" viewBox="0 0 11 11" fill="none" aria-hidden="true"><path d="M5.5 10V4M2.5 6l3-3 3 3M1 1h9" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
           Import
         </button>
-        <input type="file" id="import-file" accept=".json">
+        <input type="file" id="import-file" accept=".json" aria-label="Import Anchor Mode export file">
       </div>
       <div class="prog-row">
-        <span class="prog-lbl">Today's progress</span>
-        <div class="prog-bar"><div class="prog-fill" id="js-prog"></div></div>
-        <span class="prog-ct" id="js-ct">0 / 0</span>
+        <span class="prog-lbl" id="prog-lbl">Today's progress</span>
+        <div class="prog-bar" role="progressbar" aria-labelledby="prog-lbl" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+          <div class="prog-fill" id="js-prog"></div>
+        </div>
+        <span class="prog-ct" id="js-ct" aria-live="polite">0 / 0</span>
       </div>
     </div>
   </div>
@@ -461,70 +472,160 @@ textarea.note:focus{border-color:var(--accent-b)}
 <script>
 'use strict';
 
+/* ════════════════════════════════════════
+   TEMPLATES — times stored as minutes from midnight
+   so wake-time offset can be applied cleanly
+   ════════════════════════════════════════ */
+
 const TEMPLATES = {
   standard: {
     name: 'Standard day',
+    defaultWake: 420, // 7:00 AM
     items: [
-      {id:'s-morning', time:'7:00 – 7:30 AM',  type:'anchor',  tag:'Anchor',  title:'Morning ritual',       sub:'No phone. Sunlight, water, journal 3 intentions. Dress as if going to work.'},
-      {id:'s-gym',     time:'7:30 – 9:30 AM',  type:'anchor',  tag:'Anchor',  title:'Gym',                  sub:'Full session — 2 hours. The cornerstone. Everything else flows from this.'},
-      {id:'s-setup',   time:'9:30 – 10:00 AM', type:'anchor',  tag:'Anchor',  title:'Day setup',            sub:'Review 3 priorities. Open tracker. No email yet — plan before you react.'},
-      {id:'s-deep',    time:'10:00 AM – 12:30 PM', type:'primary', tag:'Primary', title:'Deep work — applications', sub:'2 tailored applications max. Phone away, one tab, no notifications. Peak window.'},
-      {id:'s-lunch',   time:'12:30 – 2:00 PM', type:'reset',   tag:'Reset',   title:'Lunch + real break',   sub:'Cook. Walk outside. No screens. This is load-bearing — skip it and the afternoon fails.'},
-      {id:'s-network', time:'2:00 – 3:00 PM',  type:'primary', tag:'Primary', title:'Networking + admin',   sub:'1 outreach, 1 follow-up, portals once. Batch it — no doom scrolling.'},
-      {id:'s-skill',   time:'3:00 – 5:00 PM',  type:'build',   tag:'Build',   title:'Skill + identity block', sub:'Course, portfolio, or creative work. Keeps identity intact beyond "job seeker."'},
-      {id:'s-shut',    time:'5:00 – 5:30 PM',  type:'reset',   tag:'Reset',   title:'Shutdown ritual',      sub:'Write 1 win. Set 3 priorities for tomorrow. Close laptop. Work is done.'},
+      {id:'s-morning', start:420,  end:450,  type:'anchor',  tag:'Anchor',  title:'Morning ritual',          sub:'No phone. Sunlight, water, journal 3 intentions. Dress as if going to work.'},
+      {id:'s-gym',     start:450,  end:570,  type:'anchor',  tag:'Anchor',  title:'Gym',                     sub:'Full session — 2 hours. The cornerstone. Everything else flows from this.'},
+      {id:'s-setup',   start:570,  end:600,  type:'anchor',  tag:'Anchor',  title:'Day setup',               sub:'Review 3 priorities. Open tracker. No email yet — plan before you react.'},
+      {id:'s-deep',    start:600,  end:750,  type:'primary', tag:'Primary', title:'Deep work — applications',sub:'2 tailored applications max. Phone away, one tab, no notifications. Peak window.'},
+      {id:'s-lunch',   start:750,  end:840,  type:'reset',   tag:'Reset',   title:'Lunch + real break',      sub:'Cook. Walk outside. No screens. This is load-bearing — skip it and the afternoon fails.'},
+      {id:'s-network', start:840,  end:900,  type:'primary', tag:'Primary', title:'Networking + admin',      sub:'1 outreach, 1 follow-up, portals once. Batch it — no doom scrolling.'},
+      {id:'s-skill',   start:900,  end:1020, type:'build',   tag:'Build',   title:'Skill + identity block',  sub:'Course, portfolio, or creative work. Keeps identity intact beyond "job seeker."'},
+      {id:'s-shut',    start:1020, end:1050, type:'reset',   tag:'Reset',   title:'Shutdown ritual',         sub:'Write 1 win. Set 3 priorities for tomorrow. Close laptop. Work is done.'},
     ]
   },
   minimal: {
     name: 'Minimal day',
+    defaultWake: 510, // 8:30 AM
     items: [
-      {id:'m-morning', time:'8:30 – 9:00 AM',  type:'anchor',  tag:'Anchor',  title:'Slow morning',         sub:'Shower, breakfast, 10 min walk. Get dressed. No pressure — just start moving.'},
-      {id:'m-win',     time:'9:00 – 9:30 AM',  type:'primary', tag:'Primary', title:'One small win',        sub:'Update 1 line on your resume. Send 1 email. Do one thing before the gym.'},
-      {id:'m-gym',     time:'9:30 – 11:30 AM', type:'anchor',  tag:'Anchor',  title:'Gym',                  sub:'2 hours. Mid-morning placement works for low-energy days. Resets everything.'},
-      {id:'m-lunch',   time:'12:00 – 1:00 PM', type:'reset',   tag:'Reset',   title:'Lunch',                sub:'Cook something real. Sit down. Not in front of a screen.'},
-      {id:'m-app',     time:'1:00 – 3:00 PM',  type:'primary', tag:'Primary', title:'1 application',        sub:'One fully tailored application. That is the whole job for today. Quality over quantity.'},
-      {id:'m-gen',     time:'3:00 – 4:00 PM',  type:'build',   tag:'Build',   title:'Something generative', sub:'Project, creative outlet, or skill. Maintains identity beyond the search.'},
-      {id:'m-shut',    time:'4:00 – 4:30 PM',  type:'reset',   tag:'Reset',   title:'Hard stop',            sub:'Write 1 win. Close the laptop. The work is done for today.'},
+      {id:'m-morning', start:510, end:540, type:'anchor',  tag:'Anchor',  title:'Slow morning',         sub:'Shower, breakfast, 10 min walk. Get dressed. No pressure — just start moving.'},
+      {id:'m-win',     start:540, end:570, type:'primary', tag:'Primary', title:'One small win',        sub:'Update 1 line on your resume. Send 1 email. Do one thing before the gym.'},
+      {id:'m-gym',     start:570, end:690, type:'anchor',  tag:'Anchor',  title:'Gym',                  sub:'2 hours. Mid-morning placement works for low-energy days. Resets everything.'},
+      {id:'m-lunch',   start:720, end:780, type:'reset',   tag:'Reset',   title:'Lunch',                sub:'Cook something real. Sit down. Not in front of a screen.'},
+      {id:'m-app',     start:780, end:900, type:'primary', tag:'Primary', title:'1 application',        sub:'One fully tailored application. That is the whole job for today. Quality over quantity.'},
+      {id:'m-gen',     start:900, end:960, type:'build',   tag:'Build',   title:'Something generative', sub:'Project, creative outlet, or skill. Maintains identity beyond the search.'},
+      {id:'m-shut',    start:960, end:990, type:'reset',   tag:'Reset',   title:'Hard stop',            sub:'Write 1 win. Close the laptop. The work is done for today.'},
     ]
   },
   highperf: {
     name: 'High-performance day',
+    defaultWake: 360, // 6:00 AM
     items: [
-      {id:'h-morning', time:'6:00 – 6:30 AM',  type:'anchor',  tag:'Anchor',  title:'Morning protocol',     sub:'Sunlight, hydrate, journal, cold exposure. No phone. Prime before the day begins.'},
-      {id:'h-gym',     time:'6:30 – 8:30 AM',  type:'anchor',  tag:'Anchor',  title:'Gym',                  sub:'Full 2-hour session. Legs if it\'s leg day — train the largest group when freshest.'},
-      {id:'h-setup',   time:'8:30 – 9:00 AM',  type:'anchor',  tag:'Anchor',  title:'Day setup',            sub:'Protein breakfast, caffeine (90 min post-wake). Set 3 priorities. Open tracker.'},
-      {id:'h-deep',    time:'9:00 – 11:30 AM', type:'primary', tag:'Primary', title:'Deep work — applications', sub:'2 tailored applications. Full focus — peak cognitive window. Stop at 11:30 regardless.'},
-      {id:'h-network', time:'11:30 AM – 12:30 PM', type:'primary', tag:'Primary', title:'Networking sprint',    sub:'2 outreach messages, 1 follow-up, 1 informational call if possible. Batch — never scattered.'},
-      {id:'h-lunch',   time:'12:30 – 2:00 PM', type:'reset',   tag:'Reset',   title:'Real lunch break',     sub:'Cook. Walk. Call someone. No screens. Protects afternoon output.'},
-      {id:'h-skill',   time:'2:00 – 4:00 PM',  type:'build',   tag:'Build',   title:'Skill building',       sub:'Course, portfolio, or interview prep. 2 full hours. This is the long game.'},
-      {id:'h-admin',   time:'4:00 – 5:00 PM',  type:'primary', tag:'Primary', title:'Admin + tracker',      sub:'Follow-ups, portal checks, update job tracker. All admin lives here — not before.'},
-      {id:'h-shut',    time:'5:00 – 5:30 PM',  type:'reset',   tag:'Reset',   title:'Shutdown ritual',      sub:'3 wins, 3 priorities for tomorrow. Close everything. Done — not paused.'},
+      {id:'h-morning', start:360,  end:390,  type:'anchor',  tag:'Anchor',  title:'Morning protocol',         sub:'Sunlight, hydrate, journal, cold exposure. No phone. Prime before the day begins.'},
+      {id:'h-gym',     start:390,  end:510,  type:'anchor',  tag:'Anchor',  title:'Gym',                      sub:'Full 2-hour session. Legs if it\'s leg day — train the largest group when freshest.'},
+      {id:'h-setup',   start:510,  end:540,  type:'anchor',  tag:'Anchor',  title:'Day setup',                sub:'Protein breakfast, caffeine (90 min post-wake). Set 3 priorities. Open tracker.'},
+      {id:'h-deep',    start:540,  end:690,  type:'primary', tag:'Primary', title:'Deep work — applications', sub:'2 tailored applications. Full focus — peak cognitive window. Stop at 11:30 regardless.'},
+      {id:'h-network', start:690,  end:750,  type:'primary', tag:'Primary', title:'Networking sprint',         sub:'2 outreach messages, 1 follow-up, 1 informational call if possible. Batch — never scattered.'},
+      {id:'h-lunch',   start:750,  end:840,  type:'reset',   tag:'Reset',   title:'Real lunch break',         sub:'Cook. Walk. Call someone. No screens. Protects afternoon output.'},
+      {id:'h-skill',   start:840,  end:960,  type:'build',   tag:'Build',   title:'Skill building',           sub:'Course, portfolio, or interview prep. 2 full hours. This is the long game.'},
+      {id:'h-admin',   start:960,  end:1020, type:'primary', tag:'Primary', title:'Admin + tracker',          sub:'Follow-ups, portal checks, update job tracker. All admin lives here — not before.'},
+      {id:'h-shut',    start:1020, end:1050, type:'reset',   tag:'Reset',   title:'Shutdown ritual',          sub:'3 wins, 3 priorities for tomorrow. Close everything. Done — not paused.'},
     ]
   }
 };
 
-const STORE = 'anchor_mode_v2';
-function today(){ return new Date().toISOString().slice(0,10); }
+/* Sidebar outputs per template */
+const TEMPLATE_OUTPUTS = {
+  standard: [
+    {label:'Morning Setup', desc:'Clear head and written intention'},
+    {label:'Gym',           desc:'Physical reset before deep work'},
+    {label:'Deep Work',     desc:'2 tailored applications submitted'},
+    {label:'Break',         desc:'Real food, no screens — actual rest'},
+    {label:'Networking',    desc:'Every open thread has a next step'},
+    {label:'Skill Block',   desc:'Something that compounds over time'},
+    {label:'Shutdown',      desc:'Tomorrow starts already loaded'},
+  ],
+  minimal: [
+    {label:'Slow Start',    desc:'Get moving without pressure'},
+    {label:'One Win',       desc:'Something done before the gym'},
+    {label:'Gym',           desc:'The one non-negotiable'},
+    {label:'Lunch',         desc:'Real food, actual rest'},
+    {label:'Application',   desc:'One fully tailored submission'},
+    {label:'Generative',    desc:'Something beyond the search'},
+    {label:'Hard Stop',     desc:'Work is done — protect the close'},
+  ],
+  highperf: [
+    {label:'Morning Protocol', desc:'Prime before the day begins'},
+    {label:'Gym',              desc:'Full session — train when freshest'},
+    {label:'Applications',     desc:'2 tailored, deep focus only'},
+    {label:'Networking',       desc:'2 outreach, 1 follow-up, batched'},
+    {label:'Lunch',            desc:'Cook, walk, protect afternoon output'},
+    {label:'Skill Building',   desc:'The long game — 2 full hours'},
+    {label:'Admin',            desc:'All follow-ups and portal checks here'},
+    {label:'Shutdown',         desc:'3 wins, 3 priorities — fully closed'},
+  ],
+};
 
-// Safe localStorage — falls back silently if unavailable (e.g. iframe, private mode)
+/* Card type tooltips */
+const TAG_DESCRIPTIONS = {
+  anchor:   'Anchor — non-negotiable habits that structure your day',
+  primary:  'Primary — high-value output tasks',
+  reset:    'Reset — recovery and transition time',
+  optional: 'Optional — flexible if energy allows',
+  build:    'Build — long-term skill and identity work',
+};
+
+/* ── LOCAL DATE (no UTC drift) ── */
+function today(){
+  const d = new Date();
+  return [d.getFullYear(), d.getMonth()+1, d.getDate()]
+    .map(n => String(n).padStart(2,'0')).join('-');
+}
+
+/* ── TIME HELPERS ── */
+function minsToTime12(m){
+  m = ((m % 1440) + 1440) % 1440;
+  const h24 = Math.floor(m / 60);
+  const min  = m % 60;
+  const period = h24 >= 12 ? 'PM' : 'AM';
+  const h12 = h24 % 12 || 12;
+  return `${h12}:${String(min).padStart(2,'0')} ${period}`;
+}
+
+function getWakeOffset(){
+  if(!ST.template || !TEMPLATES[ST.template]) return 0;
+  const wake = ST.wakeTime ?? TEMPLATES[ST.template].defaultWake;
+  return wake - TEMPLATES[ST.template].defaultWake;
+}
+
+function displayTime(item){
+  if(ST.customTimes[item.id]) return ST.customTimes[item.id];
+  const off = getWakeOffset();
+  return minsToTime12(item.start + off) + ' – ' + minsToTime12(item.end + off);
+}
+
+/* ── STORAGE ── */
+const STORE = 'anchor_mode_v2';
+
 const LS = (() => {
   try { localStorage.setItem('__am_test','1'); localStorage.removeItem('__am_test'); return localStorage; }
   catch { return { getItem:()=>null, setItem:()=>{}, removeItem:()=>{} }; }
 })();
 
 function load(){
-  try{ const r=LS.getItem(STORE); if(!r)return null; const s=JSON.parse(r); return s.date===today()?s:null; }catch{return null;}
+  try{
+    const r = LS.getItem(STORE);
+    if(!r) return null;
+    const s = JSON.parse(r);
+    return s.date === today() ? s : null;
+  }catch{ return null; }
 }
+
 let _saveTimer;
 function save(){
   clearTimeout(_saveTimer);
-  _saveTimer = setTimeout(()=>{
-    try{ LS.setItem(STORE,JSON.stringify({date:today(),template:ST.template,order:ST.order,done:ST.done,notes:ST.notes,openNotes:ST.openNotes,energy:ST.energy,customTimes:ST.customTimes,appsCount:ST.appsCount,appsWeek:ST.appsWeek,wins:ST.wins,streak:ST.streak,streakLast:ST.streakLast})); }catch{}
-  }, 300);
+  _saveTimer = setTimeout(saveNow, 300);
 }
 function saveNow(){
   clearTimeout(_saveTimer);
-  try{ LS.setItem(STORE,JSON.stringify({date:today(),template:ST.template,order:ST.order,done:ST.done,notes:ST.notes,openNotes:ST.openNotes,energy:ST.energy,customTimes:ST.customTimes,appsCount:ST.appsCount,appsWeek:ST.appsWeek,wins:ST.wins,streak:ST.streak,streakLast:ST.streakLast})); }catch{}
+  try{
+    LS.setItem(STORE, JSON.stringify({
+      date:today(), template:ST.template, order:ST.order,
+      done:ST.done, notes:ST.notes, openNotes:ST.openNotes,
+      energy:ST.energy, customTimes:ST.customTimes,
+      appsCount:ST.appsCount, appsWeek:ST.appsWeek,
+      wins:ST.wins, streak:ST.streak, streakLast:ST.streakLast,
+      wakeTime:ST.wakeTime,
+    }));
+  }catch{}
 }
 
 const saved = load();
@@ -541,260 +642,372 @@ const ST = {
   wins:        saved?.wins        ?? [],
   streak:      saved?.streak      ?? 0,
   streakLast:  saved?.streakLast  ?? '',
+  wakeTime:    saved?.wakeTime    ?? null,   // minutes from midnight, set once per day
 };
 
-let selectedTmpl = null;
+/* ── GREETING ── */
+function getGreeting(){
+  const h = new Date().getHours();
+  if(h < 12) return 'Good morning.';
+  if(h < 17) return 'Good afternoon.';
+  return 'Good evening.';
+}
 
+/* ── PICKER ── */
+let selectedTmpl = null;
 const overlay   = document.getElementById('picker-overlay');
+const mainPage  = document.getElementById('main-page');
 const goBtn     = document.getElementById('picker-go');
 const list      = document.getElementById('js-list');
 const progBar   = document.getElementById('js-prog');
 const progCt    = document.getElementById('js-ct');
 const tmplBadge = document.getElementById('sidebar-tmpl-name');
 
+/* Populate date displays */
 document.getElementById('js-date').textContent =
   new Date().toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'});
 document.getElementById('picker-date').textContent =
   new Date().toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric',year:'numeric'});
 
+/* Set greeting */
+document.getElementById('picker-greeting').textContent = getGreeting();
+
+/* Pre-fill wake input from saved wakeTime or current clock */
+(function initWakeInput(){
+  const wakeInput = document.getElementById('picker-wake');
+  const mins = ST.wakeTime ?? Math.round((new Date().getHours()*60 + new Date().getMinutes())/15)*15;
+  const h = Math.floor(mins/60) % 24;
+  const m = mins % 60;
+  wakeInput.value = `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}`;
+})();
+
+function readWakeInput(){
+  const val = document.getElementById('picker-wake').value;
+  if(!val) return null;
+  const [h,m] = val.split(':').map(Number);
+  return Math.round((h*60+m)/15)*15; // round to nearest 15 min
+}
+
+function showPicker(){
+  document.getElementById('picker-greeting').textContent = getGreeting();
+  selectedTmpl = ST.template || null;
+  document.querySelectorAll('.picker-card').forEach(c=>{
+    const sel = c.dataset.tmpl === selectedTmpl;
+    c.classList.toggle('selected', sel);
+    c.setAttribute('aria-checked', sel ? 'true' : 'false');
+  });
+  goBtn.disabled = !selectedTmpl;
+  goBtn.textContent = ST.template ? 'Switch template' : 'Start day';
+  overlay.classList.remove('hidden');
+  overlay.removeAttribute('aria-hidden');
+  mainPage.setAttribute('inert','');
+  setTimeout(()=>{ document.querySelector('.picker-card')?.focus(); }, 50);
+}
+
+function hidePicker(){
+  overlay.classList.add('hidden');
+  overlay.setAttribute('aria-hidden','true');
+  mainPage.removeAttribute('inert');
+}
+
 function selectTemplate(key){
   selectedTmpl = key;
-  document.querySelectorAll('.picker-card').forEach(c=>c.classList.toggle('selected', c.dataset.tmpl===key));
+  document.querySelectorAll('.picker-card').forEach(c=>{
+    const sel = c.dataset.tmpl === key;
+    c.classList.toggle('selected', sel);
+    c.setAttribute('aria-checked', sel ? 'true' : 'false');
+  });
   goBtn.disabled = false;
 }
 
 function confirmTemplate(){
   if(!selectedTmpl) return;
+  const tmpl = TEMPLATES[selectedTmpl];
+
+  // Capture wake time once per day (first confirm); override if user edited the input
+  const inputWake = readWakeInput();
+  if(ST.wakeTime === null || inputWake !== ST.wakeTime){
+    ST.wakeTime = inputWake ?? Math.round((new Date().getHours()*60+new Date().getMinutes())/15)*15;
+  }
+
   ST.template = selectedTmpl;
-  ST.order = TEMPLATES[selectedTmpl].items.map(i=>i.id);
-  ST.done = {}; ST.notes = {}; ST.openNotes = {}; ST.customTimes = {};
-  save();
-  overlay.classList.add('hidden');
+  ST.order = tmpl.items.map(i=>i.id);
+  ST.done={}; ST.notes={}; ST.openNotes={}; ST.customTimes={};
   saveNow();
+  hidePicker();
   initApp();
 }
 
-function openPicker(){
-  selectedTmpl = ST.template || null;
-  document.querySelectorAll('.picker-card').forEach(c=>{
-    c.classList.toggle('selected', c.dataset.tmpl === selectedTmpl);
-  });
-  goBtn.disabled = !selectedTmpl;
-  goBtn.textContent = ST.template ? 'Switch template' : 'Start day';
-  overlay.classList.remove('hidden');
-}
+/* Keyboard: Enter/Space on picker cards */
+overlay.addEventListener('keydown', e=>{
+  const card = e.target.closest('.picker-card');
+  if(card && (e.key==='Enter'||e.key===' ')){
+    e.preventDefault();
+    selectTemplate(card.dataset.tmpl);
+    return;
+  }
+  /* Focus trap */
+  if(e.key==='Tab'){
+    const focusable = [...overlay.querySelectorAll(
+      'button:not([disabled]),[tabindex="0"],[tabindex]:not([tabindex="-1"]),input'
+    )].filter(el=>!el.disabled && el.offsetParent!==null);
+    const first = focusable[0], last = focusable[focusable.length-1];
+    if(e.shiftKey){ if(document.activeElement===first){e.preventDefault();last.focus();} }
+    else           { if(document.activeElement===last ){e.preventDefault();first.focus();} }
+  }
+});
 
+/* ── APP INIT ── */
 function initApp(){
-  if(!ST.template || !TEMPLATES[ST.template]){ openPicker(); return; }
+  if(!ST.template||!TEMPLATES[ST.template]){ showPicker(); return; }
   const t = TEMPLATES[ST.template];
   tmplBadge.textContent = t.name;
+  renderSidebarOutputs();
   renderList();
   paintEnergy();
   updateAdhdStats();
 }
 
+/* ── SIDEBAR OUTPUTS (dynamic per template) ── */
+function renderSidebarOutputs(){
+  const outputs = TEMPLATE_OUTPUTS[ST.template] || TEMPLATE_OUTPUTS.standard;
+  const outList = document.getElementById('sidebar-out-list');
+  outList.innerHTML = outputs.map(o=>`
+    <li class="out-item">
+      <div class="out-dot" aria-hidden="true"></div>
+      <div class="out-text"><b>${o.label}</b>${o.desc}</div>
+    </li>`).join('');
+}
+
+/* ── ENERGY DOTS ── */
 const energyCtr = document.getElementById('js-energy');
 function paintEnergy(){
-  energyCtr.querySelectorAll('.e-dot').forEach(d=>d.classList.toggle('on',+d.dataset.e<=ST.energy));
+  energyCtr.querySelectorAll('.e-dot').forEach(d=>{
+    const on = +d.dataset.e <= ST.energy;
+    d.classList.toggle('on', on);
+    d.setAttribute('aria-checked', on ? 'true' : 'false');
+    d.setAttribute('tabindex', +d.dataset.e===Math.max(ST.energy,1) ? '0' : '-1');
+  });
 }
 energyCtr.addEventListener('click',e=>{
   const d=e.target.closest('.e-dot'); if(!d)return;
   ST.energy=+d.dataset.e; paintEnergy(); save();
 });
+energyCtr.addEventListener('keydown',e=>{
+  const d=e.target.closest('.e-dot'); if(!d)return;
+  let v=+d.dataset.e;
+  if(e.key==='ArrowRight'||e.key==='ArrowUp'){e.preventDefault();v=Math.min(5,v+1);}
+  else if(e.key==='ArrowLeft'||e.key==='ArrowDown'){e.preventDefault();v=Math.max(1,v-1);}
+  else if(e.key==='Enter'||e.key===' '){e.preventDefault();}
+  else return;
+  ST.energy=v; paintEnergy(); save();
+  energyCtr.querySelector(`[data-e="${v}"]`)?.focus();
+});
 
-const NOTES_SVG='<svg width="11" height="11" viewBox="0 0 11 11" fill="none"><path d="M1 2h9M1 5h6.5M1 8h4.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>';
+const NOTES_SVG='<svg width="11" height="11" viewBox="0 0 11 11" fill="none" aria-hidden="true"><path d="M1 2h9M1 5h6.5M1 8h4.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>';
 
 function getItems(){
-  if(!ST.template || !TEMPLATES[ST.template]) return [];
+  if(!ST.template||!TEMPLATES[ST.template]) return [];
   const tmplItems = TEMPLATES[ST.template].items;
   const order = ST.order || tmplItems.map(i=>i.id);
   return order.map(id=>tmplItems.find(i=>i.id===id)).filter(Boolean);
 }
 
-function displayTime(item){
-  return ST.customTimes[item.id] || item.time;
-}
-
-function buildTimeCell(item, card){
-  const hasCustom = !!ST.customTimes[item.id];
-  const timeSpan = card.querySelector('.time-label');
-  timeSpan.className = 'time time-label' + (hasCustom ? ' custom' : '');
-  timeSpan.innerHTML = (hasCustom ? '<span class="time-dot"></span>' : '') + displayTime(item);
-}
-
+/* ── BUILD CARD ── */
 function buildCard(item){
-  const card=document.createElement('div');
-  card.className='card'+(ST.done[item.id]?' done':'');
-  card.dataset.id=item.id; card.dataset.type=item.type;
-  const hasN=(ST.notes[item.id]||'').trim().length>0;
-  const isOpen=!!ST.openNotes[item.id];
-  const hasCustom=!!ST.customTimes[item.id];
-  const shownTime=displayTime(item);
+  const card = document.createElement('div');
+  card.className = 'card'+(ST.done[item.id]?' done':'');
+  card.dataset.id = item.id;
+  card.dataset.type = item.type;
+  card.setAttribute('role','listitem');
+  const hasN   = (ST.notes[item.id]||'').trim().length>0;
+  const isOpen = !!ST.openNotes[item.id];
+  const hasCustom = !!ST.customTimes[item.id];
+  const shownTime = displayTime(item);
+  const isDone = !!ST.done[item.id];
+
   card.innerHTML=`
     <div class="row-main">
-      <div class="handle" title="Drag to reorder"><i></i><i></i><i></i></div>
-      <span class="time time-label${hasCustom?' custom':''}" data-action="time-view" title="Tap to edit time">${hasCustom?'<span class=\'time-dot\'></span>':''}${shownTime}</span>
-      <span class="tag tag-${item.type} tag-col">${item.tag}</span>
+      <div class="handle" title="Drag to reorder" aria-hidden="true"><i></i><i></i><i></i></div>
+      <span class="time time-label${hasCustom?' custom':''}" data-action="time-view" title="Click to edit time" role="button" tabindex="0" aria-label="Time: ${shownTime}. Click to edit.">${hasCustom?'<span class="time-dot" aria-hidden="true"></span>':''}${shownTime}</span>
+      <span class="tag tag-${item.type} tag-col" title="${TAG_DESCRIPTIONS[item.type]||''}">${item.tag}</span>
       <div class="row-body">
         <span class="row-title">${item.title}</span>
         <span class="row-sub">${item.sub}</span>
       </div>
-      <button class="notes-btn${hasN?' live':''}" data-action="notes">${NOTES_SVG} ${hasN?'Notes':'Add note'}</button>
-      <div class="check-ring" data-action="check"><div class="check-dot"></div></div>
+      <button class="notes-btn${hasN?' live':''}" data-action="notes" aria-expanded="${isOpen}" aria-controls="notes-area-${item.id}">${NOTES_SVG} <span>${hasN?'Notes':'Add note'}</span></button>
+      <div class="check-ring" data-action="check" role="checkbox" aria-checked="${isDone}" aria-label="Mark ${item.title} complete" tabindex="0"><div class="check-dot"></div></div>
     </div>
-    <div class="notes-area${isOpen?' open':''}">
+    <div class="notes-area${isOpen?' open':''}" id="notes-area-${item.id}" aria-hidden="${!isOpen}">
       <div class="notes-inner">
         <div class="notes-sep"></div>
-        <textarea class="note" placeholder="Notes for ${item.title}\u2026">${ST.notes[item.id]||''}</textarea>
+        <textarea class="note" placeholder="Notes for ${item.title}…" aria-label="Notes for ${item.title}">${ST.notes[item.id]||''}</textarea>
       </div>
     </div>`;
 
-  // textarea
-  const ta=card.querySelector('textarea.note');
+  /* Textarea */
+  const ta = card.querySelector('textarea.note');
   ta.addEventListener('input',()=>{
     ST.notes[item.id]=ta.value;
-    const live=ta.value.trim().length>0;
-    const btn=card.querySelector('.notes-btn');
+    const live = ta.value.trim().length>0;
+    const btn  = card.querySelector('.notes-btn');
     btn.classList.toggle('live',live);
-    btn.innerHTML=NOTES_SVG+' '+(live?'Notes':'Add note');
+    btn.querySelector('span').textContent = live?'Notes':'Add note';
     save();
   });
 
-  // time tap — open inline editor
+  /* Time click */
   const timeLabel = card.querySelector('.time-label');
-  timeLabel.addEventListener('click', e => {
-    e.stopPropagation();
-    openTimeEditor(item, card, timeLabel);
-  });
+  timeLabel.addEventListener('click',e=>{e.stopPropagation();openTimeEditor(item,card,timeLabel);});
+  timeLabel.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();openTimeEditor(item,card,timeLabel);}});
 
   return card;
 }
 
-function openTimeEditor(item, card, timeLabel){
-  // parse current displayed time into start / end
+/* ── TIME EDITOR ── */
+function openTimeEditor(item,card,timeLabel){
   const current = displayTime(item);
-  const parts = current.split(/\s*[–\-]\s*/);
-  const startVal = parts[0]?.trim() || '';
-  const endVal   = parts[1]?.trim() || '';
+  const parts   = current.split(/\s*[–\-]\s*/);
+  const startVal = parts[0]?.trim()||'';
+  const endVal   = parts[1]?.trim()||'';
 
   const editor = document.createElement('div');
-  editor.className = 'time-editor';
-  editor.innerHTML = `
-    <input class="time-start" value="${startVal}" placeholder="9:00 AM" />
-    <span class="time-sep">–</span>
-    <input class="time-end" value="${endVal}" placeholder="11:00 AM" />
-    <button class="time-save">Save</button>
-    <button class="time-cancel">×</button>`;
+  editor.className='time-editor';
+  editor.setAttribute('role','group');
+  editor.setAttribute('aria-label','Edit time');
+  editor.innerHTML=`
+    <input class="time-start" value="${startVal}" placeholder="9:00 AM" aria-label="Start time"/>
+    <span class="time-sep" aria-hidden="true">–</span>
+    <input class="time-end" value="${endVal}" placeholder="11:00 AM" aria-label="End time"/>
+    <button class="time-save" aria-label="Save time">Save</button>
+    <button class="time-cancel" aria-label="Cancel edit">×</button>`;
 
-  // swap label for editor
-  const rowMain = card.querySelector('.row-main');
-  rowMain.replaceChild(editor, timeLabel);
-
-  const startIn = editor.querySelector('.time-start');
-  const endIn   = editor.querySelector('.time-end');
+  card.querySelector('.row-main').replaceChild(editor,timeLabel);
+  const startIn=editor.querySelector('.time-start');
+  const endIn  =editor.querySelector('.time-end');
   startIn.focus(); startIn.select();
+  editor.addEventListener('click',e=>e.stopPropagation());
 
-  // stop clicks inside editor from bubbling
-  editor.addEventListener('click', e => e.stopPropagation());
-
-  editor.querySelector('.time-save').addEventListener('click', e => {
+  editor.querySelector('.time-save').addEventListener('click',e=>{
     e.stopPropagation();
-    const s = startIn.value.trim();
-    const en = endIn.value.trim();
-    if(s && en){
-      const newTime = s + ' – ' + en;
-      // if matches original, clear custom
-      if(newTime === item.time){ delete ST.customTimes[item.id]; }
-      else { ST.customTimes[item.id] = newTime; }
+    const s=startIn.value.trim(), en=endIn.value.trim();
+    if(s&&en){
+      const newTime=s+' – '+en;
+      const defaultTime=displayTime(item); // computed default
+      if(newTime===defaultTime){delete ST.customTimes[item.id];}
+      else{ST.customTimes[item.id]=newTime;}
     } else {
       delete ST.customTimes[item.id];
     }
     save();
-    closeTimeEditor(item, card, editor);
+    closeTimeEditor(item,card,editor);
   });
-
-  editor.querySelector('.time-cancel').addEventListener('click', e => {
+  editor.querySelector('.time-cancel').addEventListener('click',e=>{
     e.stopPropagation();
-    closeTimeEditor(item, card, editor);
+    closeTimeEditor(item,card,editor);
   });
-
-  // save on Enter
-  [startIn, endIn].forEach(inp => {
-    inp.addEventListener('keydown', e => {
-      if(e.key === 'Enter') editor.querySelector('.time-save').click();
-      if(e.key === 'Escape') editor.querySelector('.time-cancel').click();
+  [startIn,endIn].forEach(inp=>{
+    inp.addEventListener('keydown',e=>{
+      if(e.key==='Enter') editor.querySelector('.time-save').click();
+      if(e.key==='Escape') editor.querySelector('.time-cancel').click();
     });
   });
 }
 
-function closeTimeEditor(item, card, editor){
-  const hasCustom = !!ST.customTimes[item.id];
-  const shownTime = displayTime(item);
-  const newLabel = document.createElement('span');
-  newLabel.className = 'time time-label' + (hasCustom ? ' custom' : '');
-  newLabel.dataset.action = 'time-view';
-  newLabel.title = 'Tap to edit time';
-  newLabel.innerHTML = (hasCustom ? '<span class="time-dot"></span>' : '') + shownTime;
-  newLabel.addEventListener('click', e => {
-    e.stopPropagation();
-    openTimeEditor(item, card, newLabel);
-  });
-  card.querySelector('.row-main').replaceChild(newLabel, editor);
+function closeTimeEditor(item,card,editor){
+  const hasCustom=!!ST.customTimes[item.id];
+  const shownTime=displayTime(item);
+  const newLabel=document.createElement('span');
+  newLabel.className='time time-label'+(hasCustom?' custom':'');
+  newLabel.dataset.action='time-view';
+  newLabel.title='Click to edit time';
+  newLabel.setAttribute('role','button');
+  newLabel.setAttribute('tabindex','0');
+  newLabel.setAttribute('aria-label',`Time: ${shownTime}. Click to edit.`);
+  newLabel.innerHTML=(hasCustom?'<span class="time-dot" aria-hidden="true"></span>':'')+shownTime;
+  newLabel.addEventListener('click',e=>{e.stopPropagation();openTimeEditor(item,card,newLabel);});
+  newLabel.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();openTimeEditor(item,card,newLabel);}});
+  card.querySelector('.row-main').replaceChild(newLabel,editor);
 }
 
+/* ── RENDER LIST ── */
+let _initialRender = true;
 function renderList(){
   list.innerHTML='';
   getItems().forEach(item=>{
     if(!item) return;
-    const card = buildCard(item);
+    const card=buildCard(item);
     list.appendChild(card);
-    attachAdhdToCard(item, card);
+    attachAdhdToCard(item,card);
   });
   attachDrag();
   updateProgress();
   updateAdhdStats();
+
+  // Auto-focus first restored open note panel (initial load only)
+  if(_initialRender){
+    _initialRender=false;
+    setTimeout(()=>{
+      const firstOpen=list.querySelector('.notes-area.open textarea.note');
+      if(firstOpen) firstOpen.focus();
+    },120);
+  }
 }
 
+/* ── LIST INTERACTIONS ── */
 list.addEventListener('click',e=>{
   const card=e.target.closest('.card'); if(!card)return;
   const id=card.dataset.id;
   const act=e.target.closest('[data-action]')?.dataset.action;
+
   if(act==='check'){
     ST.done[id]=!ST.done[id];
     card.classList.toggle('done',ST.done[id]);
+    card.querySelector('.check-ring').setAttribute('aria-checked',ST.done[id]?'true':'false');
     if(ST.done[id]){
       celebrate();
-      const starter=card.querySelector('.starter-wrap');
-      if(starter) starter.classList.remove('visible');
-      // check if all done → streak + big celebration
+      card.querySelector('.starter-wrap')?.classList.remove('visible');
       const items=getItems();
-      if(items.length>0 && items.every(i=>ST.done[i.id])){
+      if(items.length>0&&items.every(i=>ST.done[i.id])){
         setTimeout(()=>showToast('🎉 Full day complete! Streak updated.','success'),400);
       }
     } else {
-      const starter=card.querySelector('.starter-wrap');
-      if(starter) starter.classList.add('visible');
+      card.querySelector('.starter-wrap')?.classList.add('visible');
     }
     updateProgress(); save(); updateAdhdStats(); return;
   }
   if(act==='notes'){
     e.stopPropagation();
     ST.openNotes[id]=!ST.openNotes[id];
-    card.querySelector('.notes-area').classList.toggle('open',ST.openNotes[id]);
-    if(ST.openNotes[id])setTimeout(()=>card.querySelector('textarea.note').focus(),40);
+    const notesArea=card.querySelector('.notes-area');
+    notesArea.classList.toggle('open',ST.openNotes[id]);
+    notesArea.setAttribute('aria-hidden',!ST.openNotes[id]);
+    const btn=card.querySelector('.notes-btn');
+    btn.setAttribute('aria-expanded',ST.openNotes[id]);
+    if(ST.openNotes[id]) setTimeout(()=>card.querySelector('textarea.note').focus(),40);
     save(); return;
   }
 });
-list.addEventListener('click',e=>{ if(e.target.tagName==='TEXTAREA')e.stopPropagation(); });
 
+/* Keyboard: check ring & time label */
+list.addEventListener('keydown',e=>{
+  if(e.key!=='Enter'&&e.key!==' ') return;
+  const ring=e.target.closest('.check-ring');
+  if(ring){e.preventDefault();ring.click();return;}
+});
+list.addEventListener('click',e=>{if(e.target.tagName==='TEXTAREA')e.stopPropagation();});
+
+/* ── PROGRESS ── */
 function updateProgress(){
   const items=getItems();
-  const total=items.length;
-  const done=items.filter(i=>ST.done[i.id]).length;
-  progBar.style.width=(total?done/total*100:0)+'%';
+  const total=items.length, done=items.filter(i=>ST.done[i.id]).length;
+  const pct=total?done/total*100:0;
+  progBar.style.width=pct+'%';
+  document.querySelector('.prog-bar').setAttribute('aria-valuenow',Math.round(pct));
   progCt.textContent=done+' / '+total;
 }
 
+/* ── DRAG & DROP ── */
 const drag={srcId:null,phase:'IDLE'};
 function attachDrag(){
   list.querySelectorAll('.card').forEach(card=>{
@@ -821,7 +1034,7 @@ function attachDrag(){
         card.classList.add('drag-over');
       }
     });
-    card.addEventListener('dragleave',e=>{ if(!card.contains(e.relatedTarget))card.classList.remove('drag-over'); });
+    card.addEventListener('dragleave',e=>{if(!card.contains(e.relatedTarget))card.classList.remove('drag-over');});
     card.addEventListener('drop',e=>{
       e.preventDefault(); if(drag.phase!=='ACTIVE')return;
       const tgt=card.dataset.id;
@@ -834,60 +1047,46 @@ function attachDrag(){
   });
 }
 
+/* ── RESET ── */
 document.getElementById('js-reset').addEventListener('click',()=>{
-  if(!confirm("Reset today's progress, notes, and order?"))return;
+  if(!confirm("Reset today's progress, notes, order, and wins?")) return;
   ST.order=TEMPLATES[ST.template].items.map(i=>i.id);
-  ST.done={}; ST.notes={}; ST.openNotes={}; ST.energy=0; ST.customTimes={}; ST.wins=[]; paintEnergy(); updateAdhdStats();
-  paintEnergy(); save(); renderList();
+  ST.done={}; ST.notes={}; ST.openNotes={}; ST.energy=0; ST.customTimes={}; ST.wins=[];
+  paintEnergy(); renderSidebarOutputs(); save(); renderList();
 });
 
-document.getElementById('js-change-tmpl').addEventListener('click',openPicker);
+document.getElementById('js-change-tmpl').addEventListener('click', showPicker);
 
 /* ── EXPORT ── */
-document.getElementById('js-export').addEventListener('click', () => {
-  const data = {
-    version: 3,
-    exportedAt: new Date().toISOString(),
-    date: today(),
-    template: ST.template,
-    order: ST.order,
-    done: ST.done,
-    notes: ST.notes,
-    openNotes: ST.openNotes,
-    energy: ST.energy,
-    customTimes: ST.customTimes,
-    appsCount: ST.appsCount,
-    appsWeek: ST.appsWeek,
-    wins: ST.wins,
-    streak: ST.streak,
-    streakLast: ST.streakLast,
+document.getElementById('js-export').addEventListener('click',()=>{
+  const data={
+    version:3, exportedAt:new Date().toISOString(), date:today(),
+    template:ST.template, order:ST.order, done:ST.done,
+    notes:ST.notes, openNotes:ST.openNotes, energy:ST.energy,
+    customTimes:ST.customTimes, appsCount:ST.appsCount, appsWeek:ST.appsWeek,
+    wins:ST.wins, streak:ST.streak, streakLast:ST.streakLast, wakeTime:ST.wakeTime,
   };
-  const blob = new Blob([JSON.stringify(data, null, 2)], {type:'application/json'});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = 'anchor-mode-' + new Date().toISOString().slice(0,10) + '.json';
+  const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;
+  a.download='anchor-mode-'+new Date().toISOString().slice(0,10)+'.json';
   a.click();
   URL.revokeObjectURL(url);
-  showToast('Saved to iCloud Drive ↓', 'success');
+  showToast('Exported to downloads ↓','success');
 });
 
 /* ── IMPORT ── */
-document.getElementById('js-import-btn').addEventListener('click', () => {
+document.getElementById('js-import-btn').addEventListener('click',()=>{
   document.getElementById('import-file').click();
 });
-
-document.getElementById('import-file').addEventListener('change', e => {
-  const file = e.target.files[0];
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = ev => {
-    try {
-      const data = JSON.parse(ev.target.result);
-      if (!data.template || !TEMPLATES[data.template]) {
-        showToast('Invalid file — not an Anchor Mode export', 'error');
-        return;
-      }
+document.getElementById('import-file').addEventListener('change',e=>{
+  const file=e.target.files[0]; if(!file)return;
+  const reader=new FileReader();
+  reader.onload=ev=>{
+    try{
+      const data=JSON.parse(ev.target.result);
+      if(!data.template||!TEMPLATES[data.template]){showToast('Invalid file — not an Anchor Mode export','error');return;}
       ST.template    = data.template;
       ST.order       = data.order       || TEMPLATES[data.template].items.map(i=>i.id);
       ST.done        = data.done        || {};
@@ -900,328 +1099,295 @@ document.getElementById('import-file').addEventListener('change', e => {
       ST.wins        = data.wins        || [];
       ST.streak      = data.streak      || 0;
       ST.streakLast  = data.streakLast  || '';
+      ST.wakeTime    = data.wakeTime    ?? null;
       save();
-      tmplBadge.textContent = TEMPLATES[ST.template].name;
-      paintEnergy();
-      renderList();
-      overlay.classList.add('hidden');
-      showToast('Imported successfully ✓', 'success');
-    } catch {
-      showToast('Could not read file', 'error');
-    }
+      tmplBadge.textContent=TEMPLATES[ST.template].name;
+      paintEnergy(); renderSidebarOutputs(); renderList(); hidePicker();
+      showToast('Imported successfully ✓','success');
+    }catch{showToast('Could not read file','error');}
   };
   reader.readAsText(file);
-  e.target.value = '';
+  e.target.value='';
 });
 
 /* ── TOAST ── */
 let _toastTimer;
-function showToast(msg, type) {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.className = 'show' + (type ? ' ' + type : '');
+function showToast(msg,type){
+  const t=document.getElementById('toast');
+  t.textContent=msg;
+  t.className='show'+(type?' '+type:'');
   clearTimeout(_toastTimer);
-  _toastTimer = setTimeout(() => { t.className = ''; }, 3200);
+  _toastTimer=setTimeout(()=>{t.className='';},3200);
 }
 
-
-
-/* ════════════════════════════════════════════
+/* ════════════════════════════════════════
    ADHD FEATURE SET
-   ════════════════════════════════════════════ */
+   ════════════════════════════════════════ */
 
-/* ── Starter actions ── */
 const STARTERS = {
-  "s-morning": "Open your journal and write one sentence about today.",
-  "s-gym":     "Put on your shoes. That's the only step right now.",
-  "s-setup":   "Open your job tracker. Just look at it — nothing else yet.",
-  "s-deep":    "Open one job posting. Read the first paragraph.",
-  "s-lunch":   "Stand up. Walk to the kitchen.",
-  "s-network": "Open LinkedIn. Search your target role. One tab only.",
-  "s-skill":   "Open the course or project. Press play or open the file.",
-  "s-shut":    "Write one thing that went well today. Just one.",
-  "m-morning": "Stand up and drink a full glass of water.",
-  "m-win":     "Open your resume. Read the last bullet you wrote.",
-  "m-gym":     "Put on your shoes and grab your bag.",
-  "m-lunch":   "Walk to the kitchen. Nothing else yet.",
-  "m-app":     "Find one job posting. Open it. Just read the title.",
-  "m-gen":     "Open the project or notebook. Just open it.",
-  "m-shut":    "Write one win. It can be tiny.",
-  "h-morning": "Step outside for 60 seconds of sunlight.",
-  "h-gym":     "Put on your shoes. Walk out the door.",
-  "h-setup":   "Open your tracker. Write today's 3 priorities.",
-  "h-deep":    "Open one job posting. Read the requirements.",
-  "h-network": "Open LinkedIn. Find one person to message.",
-  "h-lunch":   "Stand up. Walk away from the screen.",
-  "h-skill":   "Open the course. Press play immediately.",
-  "h-admin":   "Open your job tracker. Update one row.",
-  "h-shut":    "Write 3 wins. Set tomorrow's 3 priorities.",
+  "s-morning":"Open your journal and write one sentence about today.",
+  "s-gym":    "Put on your shoes. That's the only step right now.",
+  "s-setup":  "Open your job tracker. Just look at it — nothing else yet.",
+  "s-deep":   "Open one job posting. Read the first paragraph.",
+  "s-lunch":  "Stand up. Walk to the kitchen.",
+  "s-network":"Open LinkedIn. Search your target role. One tab only.",
+  "s-skill":  "Open the course or project. Press play or open the file.",
+  "s-shut":   "Write one thing that went well today. Just one.",
+  "m-morning":"Stand up and drink a full glass of water.",
+  "m-win":    "Open your resume. Read the last bullet you wrote.",
+  "m-gym":    "Put on your shoes and grab your bag.",
+  "m-lunch":  "Walk to the kitchen. Nothing else yet.",
+  "m-app":    "Find one job posting. Open it. Just read the title.",
+  "m-gen":    "Open the project or notebook. Just open it.",
+  "m-shut":   "Write one win. It can be tiny.",
+  "h-morning":"Step outside for 60 seconds of sunlight.",
+  "h-gym":    "Put on your shoes. Walk out the door.",
+  "h-setup":  "Open your tracker. Write today's 3 priorities.",
+  "h-deep":   "Open one job posting. Read the requirements.",
+  "h-network":"Open LinkedIn. Find one person to message.",
+  "h-lunch":  "Stand up. Walk away from the screen.",
+  "h-skill":  "Open the course. Press play immediately.",
+  "h-admin":  "Open your job tracker. Update one row.",
+  "h-shut":   "Write 3 wins. Set tomorrow's 3 priorities.",
 };
-const FOCUSMATE_BLOCKS = new Set(["s-deep","h-deep","h-network","m-app"]);
+const FOCUSMATE_BLOCKS=new Set(["s-deep","h-deep","h-network","m-app"]);
 
-/* ── Pomodoro state ── */
-const pomos = {}; // keyed by item.id
-let globalPomoWork = 25, globalPomoBreak = 5;
+/* ── POMODORO ── */
+const pomos={};
+let globalPomoWork=25, globalPomoBreak=5;
 
-function setGlobalPomo(w, b){
-  globalPomoWork = w; globalPomoBreak = b;
-  document.getElementById('pg-25').classList.toggle('active', w===25);
-  document.getElementById('pg-50').classList.toggle('active', w===50);
-  // restart any running timers
-  Object.keys(pomos).forEach(id => {
-    if(pomos[id] && pomos[id].running) resetPomo(id);
-  });
+function setGlobalPomo(w,b){
+  globalPomoWork=w; globalPomoBreak=b;
+  document.getElementById('pg-25').classList.toggle('active',w===25);
+  document.getElementById('pg-25').setAttribute('aria-pressed',w===25);
+  document.getElementById('pg-50').classList.toggle('active',w===50);
+  document.getElementById('pg-50').setAttribute('aria-pressed',w===50);
+  Object.keys(pomos).forEach(id=>{if(pomos[id]&&pomos[id].running)resetPomo(id);});
 }
 setGlobalPomo(25,5);
 
-function buildPomoForCard(item, card){
-  const id = item.id;
-  pomos[id] = pomos[id] || { running:false, interval:null, remaining:globalPomoWork*60, phase:'work', work:globalPomoWork, brk:globalPomoBreak };
-  const p = pomos[id];
+/* Pause all pomos when tab is hidden, resume when visible */
+document.addEventListener('visibilitychange',()=>{
+  if(document.hidden){
+    Object.keys(pomos).forEach(id=>{
+      const p=pomos[id];
+      if(p&&p.running){clearInterval(p.interval);p.running=false;p._resume=true;}
+    });
+  } else {
+    Object.keys(pomos).forEach(id=>{
+      const p=pomos[id];
+      if(p&&p._resume){delete p._resume;p.running=true;p.interval=setInterval(()=>tickPomo(id),1000);}
+    });
+  }
+});
 
-  const wrap = document.createElement('div');
-  wrap.className = 'pomo-bar-wrap';
-  const bar = document.createElement('div');
-  bar.className = 'pomo-bar';
-  bar.id = 'pbar-' + id;
+function buildPomoForCard(item,card){
+  const id=item.id;
+  pomos[id]=pomos[id]||{running:false,interval:null,remaining:globalPomoWork*60,phase:'work',work:globalPomoWork,brk:globalPomoBreak};
+
+  const wrap=document.createElement('div'); wrap.className='pomo-bar-wrap';
+  const bar=document.createElement('div'); bar.className='pomo-bar'; bar.id='pbar-'+id;
   wrap.appendChild(bar);
 
-  const ctrl = document.createElement('div');
-  ctrl.className = 'pomo-controls';
-  ctrl.innerHTML = `
-    <span class="pomo-time" id="ptime-${id}">${fmtTime(p.remaining)}</span>
-    <button class="pomo-btn" id="pbtn-${id}" onclick="togglePomo('${id}')">${p.running?'Pause':'Start'}</button>
-    <button class="pomo-btn" onclick="resetPomo('${id}')">Reset</button>
-    <div class="pomo-mode" style="margin-left:auto;font-size:9px;color:var(--t3)">${p.phase==='work'?'Work':'Break'}</div>`;
+  const ctrl=document.createElement('div'); ctrl.className='pomo-controls';
+  ctrl.innerHTML=`
+    <span class="pomo-time" id="ptime-${id}" aria-live="off">${fmtTime(pomos[id].remaining)}</span>
+    <button class="pomo-btn" id="pbtn-${id}" onclick="togglePomo('${id}')" aria-label="Start pomodoro for ${item.title}">Start</button>
+    <button class="pomo-btn" onclick="resetPomo('${id}')" aria-label="Reset pomodoro">Reset</button>
+    <div class="pomo-mode" style="margin-left:auto;font-size:9px;color:var(--t3)" aria-live="polite">Work</div>`;
 
   updatePomoUI(id);
-  return [wrap, ctrl];
+  return [wrap,ctrl];
 }
 
 function fmtTime(secs){
-  const m = Math.floor(secs/60), s = secs%60;
-  return String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0');
+  return String(Math.floor(secs/60)).padStart(2,'0')+':'+String(secs%60).padStart(2,'0');
 }
 
 function updatePomoUI(id){
-  const p = pomos[id]; if(!p) return;
-  const total = (p.phase==='work' ? p.work : p.brk) * 60;
-  const pct = p.remaining / total * 100;
-  const bar = document.getElementById('pbar-'+id);
-  const time = document.getElementById('ptime-'+id);
-  const btn = document.getElementById('pbtn-'+id);
-  if(bar){ bar.style.width = pct+'%'; bar.classList.toggle('warn', pct < 20); }
-  if(time) time.textContent = fmtTime(p.remaining);
-  if(btn) btn.textContent = p.running ? 'Pause' : 'Start';
+  const p=pomos[id]; if(!p)return;
+  const total=(p.phase==='work'?p.work:p.brk)*60;
+  const pct=p.remaining/total*100;
+  const bar=document.getElementById('pbar-'+id);
+  const time=document.getElementById('ptime-'+id);
+  const btn=document.getElementById('pbtn-'+id);
+  if(bar){bar.style.width=pct+'%';bar.classList.toggle('warn',pct<20);}
+  if(time) time.textContent=fmtTime(p.remaining);
+  if(btn){btn.textContent=p.running?'Pause':'Start';btn.classList.toggle('active',p.running);}
 }
 
 function togglePomo(id){
-  const p = pomos[id]; if(!p) return;
-  if(p.running){
-    clearInterval(p.interval); p.running=false;
-  } else {
-    p.running=true;
-    p.interval = setInterval(()=>tickPomo(id), 1000);
-  }
+  const p=pomos[id]; if(!p)return;
+  if(p.running){clearInterval(p.interval);p.running=false;}
+  else{p.running=true;p.interval=setInterval(()=>tickPomo(id),1000);}
   updatePomoUI(id);
 }
 
 function tickPomo(id){
-  const p = pomos[id]; if(!p) return;
+  const p=pomos[id]; if(!p)return;
   p.remaining--;
-  if(p.remaining <= 0){
+  if(p.remaining<=0){
     clearInterval(p.interval); p.running=false;
-    if(p.phase==='work'){
-      p.phase='break'; p.remaining=p.brk*60;
-      showToast('Work done — take a break!', 'success');
-    } else {
-      p.phase='work'; p.remaining=p.work*60;
-      showToast('Break over — back to it!', '');
-    }
+    if(p.phase==='work'){p.phase='break';p.remaining=p.brk*60;showToast('Work done — take a break!','success');}
+    else{p.phase='work';p.remaining=p.work*60;showToast('Break over — back to it!','');}
     updatePomoUI(id);
-    // Update phase label
-    const mode = document.querySelector(`#pbar-${id}`)?.closest('.card')?.querySelector('.pomo-mode');
-    if(mode) mode.textContent = p.phase==='work'?'Work':'Break';
+    const mode=document.querySelector(`#pbar-${id}`)?.closest('.card')?.querySelector('.pomo-mode');
+    if(mode)mode.textContent=p.phase==='work'?'Work':'Break';
     return;
   }
   updatePomoUI(id);
 }
 
 function resetPomo(id){
-  const p = pomos[id]; if(!p) return;
+  const p=pomos[id]; if(!p)return;
   clearInterval(p.interval);
   p.running=false; p.phase='work'; p.remaining=globalPomoWork*60;
   p.work=globalPomoWork; p.brk=globalPomoBreak;
   updatePomoUI(id);
-  const mode = document.querySelector(`#pbar-${id}`)?.closest('.card')?.querySelector('.pomo-mode');
-  if(mode) mode.textContent='Work';
+  const mode=document.querySelector(`#pbar-${id}`)?.closest('.card')?.querySelector('.pomo-mode');
+  if(mode)mode.textContent='Work';
 }
 
-/* ── Starter action ── */
-function buildStarterForCard(item, card){
-  const starter = STARTERS[item.id];
-  if(!starter) return null;
-  const wrap = document.createElement('div');
-  wrap.className = 'starter-wrap';
-  wrap.id = 'starter-'+item.id;
-  const hasFM = FOCUSMATE_BLOCKS.has(item.id);
-  wrap.innerHTML = `
+/* ── STARTER ACTIONS ── */
+function buildStarterForCard(item){
+  const starter=STARTERS[item.id]; if(!starter)return null;
+  const wrap=document.createElement('div');
+  wrap.className='starter-wrap'; wrap.id='starter-'+item.id;
+  const hasFM=FOCUSMATE_BLOCKS.has(item.id);
+  wrap.innerHTML=`
     <div class="starter-box">
-      <div class="starter-icon">
-        <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2 5h6M5 2l3 3-3 3" stroke="var(--accent)" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <div class="starter-icon" aria-hidden="true">
+        <svg width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true"><path d="M2 5h6M5 2l3 3-3 3" stroke="var(--accent)" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </div>
       <span class="starter-text"><span>Start here:</span> ${starter}</span>
-      ${hasFM ? '<a class="focusmate-link" href="https://focusmate.com" target="_blank"><svg width="9" height="9" viewBox="0 0 9 9" fill="none"><path d="M1 8l7-7M4 1h4v4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg> Focusmate</a>' : ''}
+      ${hasFM?'<a class="focusmate-link" href="https://focusmate.com" target="_blank" rel="noopener noreferrer"><svg width="9" height="9" viewBox="0 0 9 9" fill="none" aria-hidden="true"><path d="M1 8l7-7M4 1h4v4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg> Focusmate</a>':''}
     </div>`;
   return wrap;
 }
 
-/* ── Attach ADHD elements to each card after render ── */
-function attachAdhdToCard(item, card){
-  const notesArea = card.querySelector('.notes-area');
-  const [pomoBar, pomoCtrl] = buildPomoForCard(item, card);
-  card.insertBefore(pomoBar, notesArea);
-  card.insertBefore(pomoCtrl, notesArea);
-  const starter = buildStarterForCard(item, card);
+function attachAdhdToCard(item,card){
+  const notesArea=card.querySelector('.notes-area');
+  const [pomoBar,pomoCtrl]=buildPomoForCard(item,card);
+  card.insertBefore(pomoBar,notesArea);
+  card.insertBefore(pomoCtrl,notesArea);
+  const starter=buildStarterForCard(item);
   if(starter){
-    card.insertBefore(starter, notesArea);
-    // show starter when card is not done
+    card.insertBefore(starter,notesArea);
     if(!ST.done[item.id]) starter.classList.add('visible');
   }
 }
 
-/* ── Celebration ── */
+/* ── CELEBRATION ── */
 function celebrate(){
-  const emojis = ['✓','⚡','🔥','★'];
-  const el = document.createElement('div');
-  el.className = 'celebrate-pop';
-  el.textContent = emojis[Math.floor(Math.random()*emojis.length)];
+  const emojis=['✓','⚡','🔥','★'];
+  const el=document.createElement('div');
+  el.className='celebrate-pop';
+  el.textContent=emojis[Math.floor(Math.random()*emojis.length)];
+  el.setAttribute('aria-hidden','true');
   document.body.appendChild(el);
-  setTimeout(()=>el.remove(), 900);
+  setTimeout(()=>el.remove(),900);
 }
 
-/* ── Apps counter (manual, source of truth in ST) ── */
+/* ── APPS COUNTER ── */
 function weekKey(){
-  const d=new Date(today()), day=d.getDay(), diff=d.getDate()-day+(day===0?-6:1);
-  return new Date(d.setDate(diff)).toISOString().slice(0,10);
+  const d=new Date();
+  const day=d.getDay(), diff=d.getDate()-day+(day===0?-6:1);
+  const weekStart=new Date(d);
+  weekStart.setDate(diff);
+  return weekStart.toISOString().slice(0,10);
 }
 
 function adjustApps(delta){
-  // If InFlow is connected, manual +/- is an override — sync will re-read on next update
-  if(ST.appsWeek !== weekKey()){ ST.appsCount=0; ST.appsWeek=weekKey(); }
-  ST.appsCount = Math.max(0, ST.appsCount + delta);
-  document.getElementById('stat-apps').textContent = ST.appsCount;
-  if(delta > 0) showToast('Application logged ✓', 'success');
+  if(ST.appsWeek!==weekKey()){ST.appsCount=0;ST.appsWeek=weekKey();}
+  ST.appsCount=Math.max(0,ST.appsCount+delta);
+  document.getElementById('stat-apps').textContent=ST.appsCount;
+  if(delta>0) showToast('Application logged ✓','success');
+  if(delta<0) showToast('Application removed','');
   save();
-  // refresh from InFlow immediately after manual adjust
-  setTimeout(syncAppsWeek, 50);
+  setTimeout(syncAppsWeek,50);
 }
 
-/* ── InFlow integration ──
-   InFlow stores jobs in localStorage['inflow_jobs_v2'] as an array.
-   Same activecatalyst.github.io origin = direct read, no export needed.
-   Each job object may have: id, title, company, status, dateAdded, appliedAt, createdAt
-   We count jobs added/applied this week. Falls back to ST.appsCount if key missing.
-─────────────────────────────────────────────────────── */
+/* ── INFLOW INTEGRATION ── */
 function readInflowJobs(){
-  try {
-    const raw = localStorage.getItem('inflow_jobs_v2');
+  try{
+    const raw=LS.getItem('inflow_jobs_v2');
     if(!raw) return null;
-    const jobs = JSON.parse(raw);
-    if(!Array.isArray(jobs) || jobs.length === 0) return null;
-    return jobs;
-  } catch { return null; }
+    const jobs=JSON.parse(raw);
+    return Array.isArray(jobs)&&jobs.length>0?jobs:null;
+  }catch{return null;}
 }
 
 function isThisWeek(dateStr){
   if(!dateStr) return false;
-  try {
-    const d = new Date(dateStr);
+  try{
+    const d=new Date(dateStr);
     if(isNaN(d)) return false;
-    const now = new Date();
-    // week starts Monday
-    const day = now.getDay(), diff = now.getDate() - day + (day===0 ? -6 : 1);
-    const weekStart = new Date(now.setDate(diff));
+    const now=new Date();
+    const day=now.getDay(), diff=now.getDate()-day+(day===0?-6:1);
+    const weekStart=new Date(now);
+    weekStart.setDate(diff);
     weekStart.setHours(0,0,0,0);
-    return d >= weekStart;
-  } catch { return false; }
+    return d>=weekStart;
+  }catch{return false;}
 }
 
 function syncAppsWeek(){
-  const jobs = readInflowJobs();
-  const badge = document.getElementById('inflow-badge');
-  const label = document.getElementById('apps-chip-label');
-
-  if(jobs !== null){
-    // Try to filter by this week using any available date field
-    const weekJobs = jobs.filter(j =>
-      isThisWeek(j.appliedAt) ||
-      isThisWeek(j.dateAdded) ||
-      isThisWeek(j.createdAt) ||
-      isThisWeek(j.dateApplied) ||
-      isThisWeek(j.date)
-    );
-    // If no jobs have date fields, fall back to total count
-    const hasDateField = jobs.some(j => j.appliedAt||j.dateAdded||j.createdAt||j.dateApplied||j.date);
-    const count = hasDateField ? weekJobs.length : jobs.length;
-
-    document.getElementById('stat-apps').textContent = count;
-    if(badge) badge.style.display = 'inline';
-    if(label) label.textContent = hasDateField ? 'Apps this week' : 'Apps total';
-    // sync back to ST so export captures it
-    ST.appsCount = count;
-    ST.appsWeek = weekKey();
+  const jobs=readInflowJobs();
+  const badge=document.getElementById('inflow-badge');
+  const label=document.getElementById('apps-chip-label');
+  if(jobs!==null){
+    const weekJobs=jobs.filter(j=>isThisWeek(j.appliedAt)||isThisWeek(j.dateAdded)||isThisWeek(j.createdAt)||isThisWeek(j.dateApplied)||isThisWeek(j.date));
+    const hasDateField=jobs.some(j=>j.appliedAt||j.dateAdded||j.createdAt||j.dateApplied||j.date);
+    const count=hasDateField?weekJobs.length:jobs.length;
+    document.getElementById('stat-apps').textContent=count;
+    if(badge) badge.style.display='inline';
+    if(label) label.textContent=hasDateField?'Apps this week':'Apps total';
+    ST.appsCount=count; ST.appsWeek=weekKey();
   } else {
-    // No InFlow data — use manual ST count
-    if(ST.appsWeek !== weekKey()){ ST.appsCount=0; ST.appsWeek=weekKey(); save(); }
-    document.getElementById('stat-apps').textContent = ST.appsCount;
-    if(badge) badge.style.display = 'none';
-    if(label) label.textContent = 'Apps this week';
+    if(ST.appsWeek!==weekKey()){ST.appsCount=0;ST.appsWeek=weekKey();save();}
+    document.getElementById('stat-apps').textContent=ST.appsCount;
+    if(badge) badge.style.display='none';
+    if(label) label.textContent='Apps this week';
   }
 }
 
-/* ── Streak (source of truth in ST) ── */
+/* ── STREAK ── */
 function checkAndUpdateStreak(){
-  const items = getItems();
-  const allDone = items.length > 0 && items.every(i=>ST.done[i.id]);
-  const td = today();
-  const yesterday = new Date(); yesterday.setDate(yesterday.getDate()-1);
-  const yd = yesterday.toISOString().slice(0,10);
-  if(allDone && ST.streakLast !== td){
-    ST.streak = (ST.streakLast===yd) ? ST.streak+1 : 1;
-    ST.streakLast = td;
-    if(ST.streak > 1) showToast('🔥 ' + ST.streak + ' day streak!', 'success');
+  const items=getItems();
+  const allDone=items.length>0&&items.every(i=>ST.done[i.id]);
+  const td=today();
+  const yesterday=new Date(); yesterday.setDate(yesterday.getDate()-1);
+  const yd=yesterday.toISOString().slice(0,10);
+  if(allDone&&ST.streakLast!==td){
+    ST.streak=(ST.streakLast===yd)?ST.streak+1:1;
+    ST.streakLast=td;
+    if(ST.streak>1) showToast('🔥 '+ST.streak+' day streak!','success');
     save();
   }
-  document.getElementById('stat-streak').textContent = ST.streak;
+  document.getElementById('stat-streak').textContent=ST.streak;
 }
 
-/* ── Win log (source of truth in ST.wins) ── */
+/* ── WIN LOG ── */
 function renderWins(){
-  const container = document.getElementById('win-list');
-  if(!container) return;
-  const wins = ST.wins || [];
-  container.innerHTML = wins.length ? '' : '<p class="win-empty">No wins logged yet — add your first one.</p>';
+  const container=document.getElementById('win-list'); if(!container)return;
+  const wins=ST.wins||[];
+  container.innerHTML=wins.length?'':`<p class="win-empty">No wins logged yet — add your first one.</p>`;
   wins.slice().reverse().forEach((w,i)=>{
-    const el = document.createElement('div');
+    const el=document.createElement('div');
     el.className='win-item';
-    el.innerHTML=`<div class="win-dot"></div><span class="win-text">${w}</span><button onclick="removeWin(${wins.length-1-i})" style="background:none;border:none;color:var(--t3);cursor:pointer;font-size:12px;margin-left:auto;padding:0 2px" title="Remove">×</button>`;
+    el.innerHTML=`<div class="win-dot" aria-hidden="true"></div><span class="win-text">${w}</span><button onclick="removeWin(${wins.length-1-i})" style="background:none;border:none;color:var(--t3);cursor:pointer;font-size:12px;margin-left:auto;padding:0 2px" aria-label="Remove this win">×</button>`;
     container.appendChild(el);
   });
-  document.getElementById('stat-wins').textContent = wins.length;
+  document.getElementById('stat-wins').textContent=wins.length;
 }
 
 function addWin(){
-  const input = document.getElementById('win-input');
-  const val = input.value.trim();
-  if(!val) return;
-  ST.wins = ST.wins || [];
+  const input=document.getElementById('win-input');
+  const val=input.value.trim(); if(!val)return;
+  ST.wins=ST.wins||[];
   ST.wins.push(val);
-  save();
-  input.value='';
-  renderWins();
-  celebrate();
-  showToast('Win logged ✓', 'success');
+  save(); input.value=''; renderWins(); celebrate();
+  showToast('Win logged ✓','success');
 }
 
 function removeWin(idx){
@@ -1229,49 +1395,55 @@ function removeWin(idx){
   save(); renderWins();
 }
 
-document.getElementById('win-input')?.addEventListener('keydown', e=>{
-  if(e.key==='Enter') addWin();
-});
+document.getElementById('win-input')?.addEventListener('keydown',e=>{if(e.key==='Enter')addWin();});
 
 function toggleWinPanel(){
-  document.getElementById('win-panel').classList.toggle('open');
-  renderWins();
+  const panel=document.getElementById('win-panel');
+  const backdrop=document.getElementById('win-backdrop');
+  const isOpen=panel.classList.toggle('open');
+  backdrop.classList.toggle('open',isOpen);
+  panel.setAttribute('aria-hidden',!isOpen);
+  if(isOpen) renderWins();
 }
 
-/* ── Update all ADHD stats ── */
+/* ── UPDATE ALL ADHD STATS ── */
 function updateAdhdStats(){
   if('requestIdleCallback' in window){
-    requestIdleCallback(()=>{ syncAppsWeek(); checkAndUpdateStreak(); renderWins(); });
+    requestIdleCallback(()=>{syncAppsWeek();checkAndUpdateStreak();renderWins();});
   } else {
-    syncAppsWeek(); checkAndUpdateStreak(); renderWins();
+    syncAppsWeek();checkAndUpdateStreak();renderWins();
   }
 }
 
-/* ── Hook into existing check toggle to add celebration + hide starter ── */
-const _origCheck = list.onclick;
-
-if(saved && saved.template){
-  overlay.classList.add('hidden');
+/* ── BOOT ── */
+if(saved&&saved.template){
+  hidePicker();
   saveNow();
   initApp();
 } else {
-  openPicker();
+  showPicker();
 }
 
-// Poll InFlow every 60s — live count if user adds jobs in another tab
-setInterval(syncAppsWeek, 60000);
+// Poll InFlow every 60s for live count
+setInterval(syncAppsWeek,60000);
 </script>
-<div id="win-panel">
+
+<!-- WIN PANEL -->
+<div id="win-panel" role="dialog" aria-label="Today's wins" aria-hidden="true">
   <div class="win-panel-head">
     <span class="win-panel-title">Today's wins</span>
-    <button class="win-close" onclick="toggleWinPanel()">×</button>
+    <button class="win-close" onclick="toggleWinPanel()" aria-label="Close wins panel">×</button>
   </div>
   <div class="win-list" id="win-list"></div>
   <div class="win-input-wrap">
-    <input class="win-input" id="win-input" placeholder="Log a win…" maxlength="120">
+    <input class="win-input" id="win-input" placeholder="Log a win…" maxlength="120" aria-label="Log a win">
     <button class="win-add-btn" onclick="addWin()">Add</button>
   </div>
 </div>
-<div id="toast"></div>
+
+<!-- WIN PANEL BACKDROP -->
+<div id="win-backdrop" onclick="toggleWinPanel()" aria-hidden="true"></div>
+
+<div id="toast" role="status" aria-live="polite"></div>
 </body>
 </html>
